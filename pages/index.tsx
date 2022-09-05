@@ -1,3 +1,4 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -10,6 +11,7 @@ import {
   ImageListItem,
   ImageListItemBar,
   Link,
+  Snackbar,
   Stack,
   TextField,
   useMediaQuery,
@@ -46,6 +48,7 @@ const Home: NextPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [prompt, setPrompt] = useState<string>();
   const [images, setImages] = useState<string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -93,6 +96,17 @@ const Home: NextPage = () => {
   }, 5000);
 
   const theme = useTheme();
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
@@ -157,6 +171,30 @@ const Home: NextPage = () => {
                   height={200}
                   value={invoice?.request || ""}
                 />
+                <IconButton aria-label="copy">
+                  <ContentCopyIcon
+                    onClick={() => {
+                      setOpen(true);
+                      navigator.clipboard.writeText(invoice.request);
+                    }}
+                  />
+                </IconButton>
+
+                <Snackbar
+                  open={open}
+                  autoHideDuration={3000}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    Copied!
+                  </Alert>
+                </Snackbar>
                 {images.length === 0 && (
                   <Alert severity="warning">
                     <AlertTitle>Warning</AlertTitle>
