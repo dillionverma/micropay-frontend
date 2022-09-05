@@ -146,6 +146,39 @@ const Home: NextPage = () => {
         `}
       </Script>
 
+      <Alert
+        severity="error"
+        style={{ width: "100%", justifyContent: "center" }}
+      >
+        <AlertTitle>
+          Warning: This software is still very early in development
+        </AlertTitle>
+        We're currently dealing with increased traffic and experiencing some
+        issues generating images.{" "}
+        <strong>
+          If you paid an invoice and didn't recieve images, please share the
+          invoice you paid to this{" "}
+          <a
+            href="https://forms.gle/c2tGbDJ2Hg9jvVbF9"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "rgb(103, 58, 183)" }}
+            // google form color code hex
+          >
+            form.
+          </a>{" "}
+          For status updates, join our Telegram support group{" "}
+          <a
+            href="https://t.me/+zGVesHQRbl04NTA5"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#229ED9" }}
+          >
+            here
+          </a>
+          .
+        </strong>
+      </Alert>
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
