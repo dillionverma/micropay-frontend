@@ -1,4 +1,5 @@
 import DownloadIcon from "@mui/icons-material/Download";
+import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
@@ -21,7 +22,6 @@ import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
-
 import { useInterval } from "../utils/useInterval";
 
 interface Invoice {
@@ -247,6 +247,13 @@ const Home: NextPage = () => {
       </main>
 
       <footer className={styles.footer}>
+        <a
+          href="https://t.me/+zGVesHQRbl04NTA5"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <TelegramIcon sx={{ color: "#229ED9" }} />
+        </a>
         <a
           href="https://lightning.network/"
           target="_blank"
