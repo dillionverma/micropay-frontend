@@ -3,7 +3,7 @@
 }
 
 .main {
-  min-height: 100vh;
+  min-height: 90vh;
   padding: 4rem 0;
   flex: 1;
   display: flex;
@@ -42,7 +42,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .title,
@@ -119,11 +119,12 @@
   .card,
   .footer {
     border-color: #222;
+    border-width: 0;
   }
   .code {
     background: #111;
   }
   .logo img {
-    filter: invert(1);
+    /* filter: invert(1); */
   }
 }
