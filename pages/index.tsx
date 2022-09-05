@@ -1,6 +1,7 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import FeedbackIcon from "@mui/icons-material/Feedback";
+import HelpIcon from "@mui/icons-material/Help";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -23,6 +24,7 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 import { default as Image } from "next/image";
+import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
@@ -130,6 +132,19 @@ const Home: NextPage = () => {
           src="https://plausible.io/js/plausible.js"
         />
       </Head>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-LTPMN00GCF"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-LTPMN00GCF');
+        `}
+      </Script>
 
       <main className={styles.main}>
         <Container maxWidth="sm">
@@ -167,15 +182,28 @@ const Home: NextPage = () => {
             >
               Generate
             </LoadingButton>
-            <Button
-              variant="outlined"
-              startIcon={<FeedbackIcon />}
-              onClick={() =>
-                window.open("https://forms.gle/byhZYvEPyAZxvDLP8", "_blank")
-              }
-            >
-              Submit feedback
-            </Button>
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="outlined"
+                startIcon={<FeedbackIcon />}
+                onClick={() =>
+                  window.open("https://forms.gle/byhZYvEPyAZxvDLP8", "_blank")
+                }
+              >
+                Submit feedback
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<HelpIcon />}
+                onClick={() =>
+                  window.open(
+                    "https://pitch.com/v/DALL-E-prompt-book-v1-tmd33y"
+                  )
+                }
+              >
+                Learn how to craft a good prompt
+              </Button>
+            </Stack>
 
             {invoice && images.length === 0 && (
               <>
