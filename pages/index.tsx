@@ -107,6 +107,11 @@ const Home: NextPage = () => {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <script
+          defer
+          data-domain="describe.photo"
+          src="https://plausible.io/js/plausible.js"
+        />
       </Head>
 
       <main className={styles.main}>
