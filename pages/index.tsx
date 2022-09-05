@@ -5,6 +5,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
+  Button,
   Container,
   IconButton,
   ImageList,
@@ -14,6 +15,7 @@ import {
   Snackbar,
   Stack,
   TextField,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -166,19 +168,26 @@ const Home: NextPage = () => {
             </LoadingButton>
             {invoice && (
               <>
+                <Typography variant="subtitle1" align="center">
+                  Please pay 1000 satoshis to generate images.
+                </Typography>
+
                 <QRCodeSVG
                   width={200}
                   height={200}
                   value={invoice?.request || ""}
                 />
-                <IconButton aria-label="copy">
-                  <ContentCopyIcon
-                    onClick={() => {
-                      setOpen(true);
-                      navigator.clipboard.writeText(invoice.request);
-                    }}
-                  />
-                </IconButton>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setOpen(true);
+                    navigator.clipboard.writeText(invoice.request);
+                  }}
+                  startIcon={<ContentCopyIcon />}
+                >
+                  Copy invoice
+                </Button>
+                <IconButton aria-label="copy"></IconButton>
 
                 <Snackbar
                   open={open}
