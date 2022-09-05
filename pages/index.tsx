@@ -153,11 +153,11 @@ const Home: NextPage = () => {
         <AlertTitle>
           Warning: This software is still very early in development
         </AlertTitle>
-        We're currently dealing with increased traffic and experiencing some
-        issues generating images.{" "}
+        We&apos;re currently dealing with increased traffic and experiencing
+        some issues generating images.{" "}
         <strong>
-          If you paid an invoice and didn't recieve images, please share the
-          invoice you paid to this{" "}
+          If you paid an invoice and didn&apos;t recieve images, please share
+          the invoice you paid to this{" "}
           <a
             href="https://forms.gle/c2tGbDJ2Hg9jvVbF9"
             target="_blank"
