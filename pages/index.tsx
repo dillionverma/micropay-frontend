@@ -20,6 +20,7 @@ import { default as Image } from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
+import { downloadImage } from "../utils/downloadImage";
 
 import { useInterval } from "../utils/useInterval";
 
@@ -35,25 +36,10 @@ interface Invoice {
   tokens: number;
 }
 
-const downloadImage = async (url: string, name: string): Promise<void> => {
-  return fetch(url)
-    .then((resp) => {
-      return resp.blob();
-    })
-    .then((blob) => {
-      console.log(blob);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      // the filename you want
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    })
-    .catch((e) => console.log("An error sorry", e));
-};
+const SERVER_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001"
+    : "https://lightning-dalle2-server.onrender.com";
 
 const Home: NextPage = () => {
   const [invoice, setInvoice] = useState<Invoice>();
@@ -78,14 +64,14 @@ const Home: NextPage = () => {
   }, [images]);
 
   const getInvoice = async (): Promise<void> => {
-    const response = await fetch("http://localhost:3001/invoice");
+    const response = await fetch(`${SERVER_URL}/invoice`);
     const data = await response.json();
     setInvoice(data);
   };
 
   const generate = async (): Promise<void> => {
     if (!invoice?.id || !prompt) return;
-    const response = await fetch("http://localhost:3001/generate", {
+    const response = await fetch(`${SERVER_URL}/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -200,15 +186,6 @@ const Home: NextPage = () => {
                       await downloadImage(image, `image-${i}.png`);
                       i++;
                     }
-                    // images.forEach(
-                    //   async (image, i) =>
-                    // );
-                    // await Promise.all(
-                    //   images.map(
-                    //     async (image, i) =>
-                    //       await downloadImage(image, `image-${i + 1}.png`)
-                    //   )
-                    // );
                   }}
                 >
                   Download All
@@ -260,16 +237,6 @@ const Home: NextPage = () => {
                 </ImageList>
               </>
             )}
-            {/* <a download="test.png" href={img} title="my image">
-              <Image
-                src={img}
-                height={200}
-                width={200}
-                // onClick={async () => {
-                //   await downloadImage(img, "dalle-2");
-                // }}
-              />
-            </a> */}
           </Stack>
         </Container>
       </main>
