@@ -1,5 +1,6 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
+import FeedbackIcon from "@mui/icons-material/Feedback";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -166,6 +167,16 @@ const Home: NextPage = () => {
             >
               Generate
             </LoadingButton>
+            <Button
+              variant="outlined"
+              startIcon={<FeedbackIcon />}
+              onClick={() =>
+                window.open("https://forms.gle/byhZYvEPyAZxvDLP8", "_blank")
+              }
+            >
+              Submit feedback
+            </Button>
+
             {invoice && (
               <>
                 <Typography variant="subtitle1" align="center">
@@ -187,7 +198,6 @@ const Home: NextPage = () => {
                 >
                   Copy invoice
                 </Button>
-                <IconButton aria-label="copy"></IconButton>
 
                 <Snackbar
                   open={open}
@@ -204,44 +214,26 @@ const Home: NextPage = () => {
                     Copied!
                   </Alert>
                 </Snackbar>
-                {images.length === 0 && (
-                  <Alert severity="warning">
-                    <AlertTitle>Warning</AlertTitle>
-                    <strong>
-                      Don&apos;t switch tabs or you may lose your images!{" "}
-                    </strong>
-                    Please wait around 20 seconds after successful payment to
-                    receive images.
-                  </Alert>
-                )}
-                {images.length > 0 && (
-                  <Alert severity="success">
-                    <AlertTitle>Success</AlertTitle>
-                    Make sure you download your images before leaving this page
-                    since we don&apos;t store them!
-                  </Alert>
-                )}
+
+                <Alert severity="warning">
+                  <AlertTitle>Warning</AlertTitle>
+                  <strong>
+                    Don&apos;t switch tabs or you may lose your images!{" "}
+                  </strong>
+                  Please wait around 20 seconds after successful payment to
+                  receive images.
+                </Alert>
               </>
             )}
 
             {images.length > 0 && (
               <>
-                <LoadingButton
-                  variant="contained"
-                  style={{ width: "100%" }}
-                  color="primary"
-                  loading={invoice && images.length === 0}
-                  loadingPosition="center"
-                  onClick={async () => {
-                    let i = 1;
-                    for (const image of images) {
-                      await downloadImage(image, `image-${i}.png`);
-                      i++;
-                    }
-                  }}
-                >
-                  Download All
-                </LoadingButton>
+                <Alert severity="success">
+                  <AlertTitle>Success</AlertTitle>
+                  Make sure you download your images before leaving this page
+                  since we don&apos;t store them!
+                </Alert>
+
                 <ImageList
                   sx={{ width: "100%" }}
                   cols={largeScreen ? 2 : 2}
@@ -287,6 +279,22 @@ const Home: NextPage = () => {
                     </Link>
                   ))}
                 </ImageList>
+                <LoadingButton
+                  variant="contained"
+                  style={{ width: "100%" }}
+                  color="primary"
+                  loading={invoice && images.length === 0}
+                  loadingPosition="center"
+                  onClick={async () => {
+                    let i = 1;
+                    for (const image of images) {
+                      await downloadImage(image, `image-${i}.png`);
+                      i++;
+                    }
+                  }}
+                >
+                  Download All
+                </LoadingButton>
               </>
             )}
           </Stack>
