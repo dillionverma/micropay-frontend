@@ -177,7 +177,7 @@ const Home: NextPage = () => {
               Submit feedback
             </Button>
 
-            {invoice && (
+            {invoice && images.length === 0 && (
               <>
                 <Typography variant="subtitle1" align="center">
                   Please pay 1000 satoshis to generate images.
