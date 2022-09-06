@@ -578,6 +578,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/bad-words@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@types/bad-words/-/bad-words-3.0.1.tgz#6a20fb08814af5e1f2428fa9e0098ca7b36f730a"
+  integrity sha512-7la3ZDJG1tlRqySO+pnXycZpacaMEw/iLEm8kc4l+I+jN8KjBfoQVwO6jm98xzXVLrxV8vDrB5TaMoop8sKclQ==
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -637,10 +642,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.13.tgz#23e6c5168333480d454243378b69e861ab5c011a"
   integrity sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==
 
-"@types/node@18.7.10":
-  version "18.7.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.10.tgz#f642dc9ded1bdd8c2cd847246466e71182b0fd67"
-  integrity sha512-SST7B//wF7xlGoLo1IEVB0cQ4e7BgXlDk5IaPgb5s0DlYLjb4if07h8+0zbQIvahfPNXs6e7zyT0EH1MqaS+5g==
+"@types/node@^18.7.15":
+  version "18.7.15"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.15.tgz#20ae1ec80c57ee844b469f968a1cd511d4088b29"
+  integrity sha512-XnjpaI8Bgc3eBag2Aw4t2Uj/49lLBSStHWfqKvIuXD7FIrZyMLWp8KuAFHAqxMZYTF9l08N1ctUn9YNybZJVmQ==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -920,6 +925,18 @@ babel-plugin-macros@^3.1.0:
     "@babel/runtime" "^7.12.5"
     cosmiconfig "^7.0.0"
     resolve "^1.19.0"
+
+bad-words@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/bad-words/-/bad-words-3.0.4.tgz#044c83935c4c363a905d47b5e0179f7241fecaec"
+  integrity sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==
+  dependencies:
+    badwords-list "^1.0.0"
+
+badwords-list@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/badwords-list/-/badwords-list-1.0.0.tgz#5e9856dbf13482a295c3b0b304afb9d4cfc5c579"
+  integrity sha512-oWhaSG67e+HQj3OGHQt2ucP+vAPm1wTbdp2aDHeuh4xlGXBdWwzZ//pfu6swf5gZ8iX0b7JgmSo8BhgybbqszA==
 
 balanced-match@^1.0.0:
   version "1.0.2"

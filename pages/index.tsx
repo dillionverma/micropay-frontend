@@ -2,6 +2,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import HelpIcon from "@mui/icons-material/Help";
+import PolicyIcon from "@mui/icons-material/Policy";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -21,6 +22,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import Filter from "bad-words";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { default as Image } from "next/image";
@@ -30,6 +32,11 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
+import FAQ from "./faq";
+const filter = new Filter();
+
+// this one was used quite a bit
+filter.addWords("dickbutt");
 
 interface Invoice {
   chain_address: string;
@@ -50,8 +57,8 @@ const SERVER_URL =
 
 const Home: NextPage = () => {
   const [invoice, setInvoice] = useState<Invoice>();
-  const [errorMessage, setErrorMessage] = useState<string>();
-  const [prompt, setPrompt] = useState<string>();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -151,10 +158,10 @@ const Home: NextPage = () => {
         style={{ width: "100%", justifyContent: "center" }}
       >
         <AlertTitle>
-          Warning: This software is still very early in development
+          Warning: This software is still very early in development. Use at your
+          own risk.
         </AlertTitle>
-        We&apos;re currently dealing with increased traffic and experiencing
-        some issues generating images.{" "}
+        We&apos;re currently dealing with increased traffic.{" "}
         <strong>
           If you paid an invoice and didn&apos;t recieve images, please share
           the invoice you paid to this{" "}
@@ -186,7 +193,7 @@ const Home: NextPage = () => {
 
             <TextField
               error={!!errorMessage && images.length === 0}
-              helperText={errorMessage && images.length === 0}
+              helperText={errorMessage}
               fullWidth
               label="Enter prompt"
               id="fullWidth"
@@ -207,6 +214,8 @@ const Home: NextPage = () => {
               onClick={async () => {
                 if (!prompt) {
                   setErrorMessage("Please enter a prompt");
+                } else if (filter.isProfane(prompt)) {
+                  setErrorMessage("Please enter a non-profane prompt");
                 } else {
                   await getInvoice();
                   setImages([]);
@@ -215,9 +224,10 @@ const Home: NextPage = () => {
             >
               Generate
             </LoadingButton>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={1}>
               <Button
                 variant="outlined"
+                size="small"
                 startIcon={<FeedbackIcon />}
                 onClick={() =>
                   window.open("https://forms.gle/byhZYvEPyAZxvDLP8", "_blank")
@@ -227,6 +237,7 @@ const Home: NextPage = () => {
               </Button>
               <Button
                 variant="outlined"
+                size="small"
                 startIcon={<HelpIcon />}
                 onClick={() =>
                   window.open(
@@ -235,6 +246,18 @@ const Home: NextPage = () => {
                 }
               >
                 Learn how to craft a good prompt
+              </Button>
+            </Stack>
+            <Stack direction="row" spacing={1}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<PolicyIcon />}
+                onClick={() =>
+                  window.open("https://labs.openai.com/policies/terms")
+                }
+              >
+                Dalle-2 Terms of use
               </Button>
             </Stack>
 
@@ -358,6 +381,17 @@ const Home: NextPage = () => {
                 </LoadingButton>
               </>
             )}
+
+            <Stack style={{ marginTop: "200px" }}>
+              <Typography
+                style={{ marginBottom: "20px" }}
+                variant="h4"
+                align="center"
+              >
+                Frequently asked questions (FAQ)
+              </Typography>
+              <FAQ />
+            </Stack>
           </Stack>
         </Container>
       </main>
@@ -370,6 +404,17 @@ const Home: NextPage = () => {
         >
           <TelegramIcon sx={{ color: "#229ED9" }} />
         </a>
+        {/* <Typography variant="subtitle1" align="center">
+          Made with ❤️ by{" "}
+          <a
+            href="https://twitter.com/dillionverma"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#229ED9" }}
+          >
+            Dillion{" "}
+          </a>
+        </Typography> */}
         <a
           href="https://lightning.network/"
           target="_blank"
