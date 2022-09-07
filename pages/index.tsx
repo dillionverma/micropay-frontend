@@ -286,6 +286,7 @@ const Home: NextPage = () => {
                   setImages([]);
                   setOrderStatus(DEFAULT_ORDER_STATUS);
                   setStopGeneratePolling(false);
+                  setProgress(0);
                 }
               }}
             >
