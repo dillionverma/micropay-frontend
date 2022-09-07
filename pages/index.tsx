@@ -1,20 +1,22 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
-import FeedbackIcon from "@mui/icons-material/Feedback";
-import HelpIcon from "@mui/icons-material/Help";
-import PolicyIcon from "@mui/icons-material/Policy";
+import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
+  Box,
   Button,
   Container,
+  Divider,
   IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  LinearProgress,
   Link,
+  Paper,
   Snackbar,
   Stack,
   TextField,
@@ -22,6 +24,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import axios from "axios";
 import Filter from "bad-words";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -37,6 +40,7 @@ const filter = new Filter();
 
 // this one was used quite a bit
 filter.addWords("dickbutt");
+filter.removeWords("god");
 
 interface Invoice {
   chain_address: string;
@@ -50,6 +54,13 @@ interface Invoice {
   tokens: number;
 }
 
+const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
+
+const validateEmail = (email: string) => {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};
+
 const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3001"
@@ -58,9 +69,33 @@ const SERVER_URL =
 const Home: NextPage = () => {
   const [invoice, setInvoice] = useState<Invoice>();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [refundErrorMessage, setRefundErrorMessage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
+  const [showRefund, setShowRefund] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+
+  const [refundInvoice, setRefundInvoice] = useState<string>("");
+  const [refundInvoiceSent, setRefundInvoiceSent] = useState<boolean>(false);
+
+  const [email, setEmail] = useState<string>("");
+  const [emailSent, setEmailSent] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
+
+  const [stopGeneratePolling, setStopGeneratePolling] =
+    useState<boolean>(false);
+  const [orderStatus, setOrderStatus] = useState<string>(DEFAULT_ORDER_STATUS);
   const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (orderStatus === "INVOICE_NOT_PAID") {
+      setProgress(0);
+    } else if (
+      orderStatus === "Invoice paid! Dalle-2 is currently generating images..."
+    ) {
+      setProgress(70);
+    }
+  }, [orderStatus]);
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -78,10 +113,27 @@ const Home: NextPage = () => {
     };
   }, [images]);
 
-  const getInvoice = async (): Promise<void> => {
-    const response = await fetch(`${SERVER_URL}/invoice`);
-    const data = await response.json();
-    setInvoice(data);
+  const getInvoice = async (prompt: string): Promise<void> => {
+    const response = await axios.post(`${SERVER_URL}/invoice`, { prompt });
+    setInvoice(response.data);
+  };
+
+  const sendEmail = async (email: string): Promise<void> => {
+    const response = await axios.post(`${SERVER_URL}/subscribe`, {
+      email,
+    });
+    setEmailSent(true);
+  };
+
+  const sendRefundInvoice = async (
+    invoiceId: string,
+    refundInvoice: string
+  ): Promise<void> => {
+    const refund = await axios.post(`${SERVER_URL}/refund`, {
+      invoiceId: invoiceId,
+      refundInvoice: refundInvoice,
+    });
+    setRefundInvoiceSent(true);
   };
 
   const generate = async (): Promise<void> => {
@@ -98,14 +150,27 @@ const Home: NextPage = () => {
     });
     const data = await response.json();
 
-    if (!data.error) setImages(data);
+    setOrderStatus(data.message);
+    if (data.status === "DALLE_GENERATED") {
+      setImages(data.images);
+      setStopGeneratePolling(true);
+    } else if (
+      data.status === "DALLE_FAILED" ||
+      data.status === "SERVER_ERROR"
+    ) {
+      setShowRefund(true);
+      setStopGeneratePolling(true);
+    }
   };
 
-  useInterval(async () => {
-    if (invoice && images.length === 0) {
-      await generate();
-    }
-  }, 5000);
+  useInterval(
+    async () => {
+      if (invoice && images.length === 0) {
+        await generate();
+      }
+    },
+    stopGeneratePolling ? null : 5000 // when set to null, we stop polling
+  );
 
   const theme = useTheme();
 
@@ -116,7 +181,6 @@ const Home: NextPage = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -190,7 +254,9 @@ const Home: NextPage = () => {
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
             <h1 className={styles.title}>Dalle-2 Image generator</h1>
-
+            <h6 className={styles.subtitle}>
+              ⚡ A picture is worth 1000 sats ⚡
+            </h6>
             <TextField
               error={!!errorMessage && images.length === 0}
               helperText={errorMessage}
@@ -207,71 +273,96 @@ const Home: NextPage = () => {
               variant="contained"
               style={{ width: "100%" }}
               color="primary"
-              loading={invoice && images.length === 0}
+              loading={invoice && images.length === 0 && !showRefund}
               // loadingIndicator="Waiting for payment…"
               loadingPosition="center"
-              // endIcon={<SendIcon />}
               onClick={async () => {
                 if (!prompt) {
                   setErrorMessage("Please enter a prompt");
                 } else if (filter.isProfane(prompt)) {
                   setErrorMessage("Please enter a non-profane prompt");
                 } else {
-                  await getInvoice();
+                  await getInvoice(prompt);
                   setImages([]);
+                  setOrderStatus(DEFAULT_ORDER_STATUS);
+                  setStopGeneratePolling(false);
                 }
               }}
             >
               Generate
             </LoadingButton>
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<FeedbackIcon />}
-                onClick={() =>
-                  window.open("https://forms.gle/byhZYvEPyAZxvDLP8", "_blank")
-                }
-              >
-                Submit feedback
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<HelpIcon />}
-                onClick={() =>
-                  window.open(
-                    "https://pitch.com/v/DALL-E-prompt-book-v1-tmd33y"
-                  )
-                }
-              >
-                Learn how to craft a good prompt
-              </Button>
-            </Stack>
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<PolicyIcon />}
-                onClick={() =>
-                  window.open("https://labs.openai.com/policies/terms")
-                }
-              >
-                Dalle-2 Terms of use
-              </Button>
-            </Stack>
 
-            {invoice && images.length === 0 && (
+            {showRefund && !refundInvoiceSent && (
+              <>
+                <Alert severity="error">
+                  <AlertTitle>Uh-oh</AlertTitle>
+                  Something went wrong during generation. Please paste an
+                  invoice for a refund
+                </Alert>
+                <div
+                  style={{
+                    flexDirection: "row",
+                    display: "flex",
+                    width: "100%",
+                  }}
+                >
+                  <TextField
+                    style={{ flex: 1 }}
+                    fullWidth
+                    id="refund"
+                    error={!!refundErrorMessage && images.length === 0}
+                    helperText={refundErrorMessage}
+                    label="Enter an invoice for a refund. We will manually refund you."
+                    onChange={(e) => {
+                      setRefundInvoice(e.target.value);
+                      setRefundErrorMessage("");
+                    }}
+                  />
+                  <Button
+                    style={{ marginLeft: "10px" }}
+                    variant="outlined"
+                    onClick={async () => {
+                      if (invoice && refundInvoice) {
+                        await sendRefundInvoice(invoice.id, refundInvoice);
+                        setRefundErrorMessage("");
+                      } else {
+                        setRefundErrorMessage("Please enter an invoice");
+                      }
+                    }}
+                    startIcon={<SendIcon />}
+                  >
+                    Send
+                  </Button>
+                </div>
+              </>
+            )}
+            {showRefund && refundInvoiceSent && (
+              <Alert severity="success">
+                Refund invoice sent. We will manually refund you.
+              </Alert>
+            )}
+
+            {invoice && images.length === 0 && !showRefund && (
               <>
                 <Typography variant="subtitle1" align="center">
                   Please pay 1000 satoshis to generate images.
                 </Typography>
+                <Typography variant="subtitle1" align="center">
+                  Order status: {orderStatus}
+                </Typography>
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress variant="determinate" value={progress} />
+                </Box>
 
                 <QRCodeSVG
                   width={200}
                   height={200}
+                  onClick={() => {
+                    window.open(`lightning:${invoice?.request}`);
+                  }}
                   value={invoice?.request || ""}
                 />
+
                 <Button
                   variant="outlined"
                   onClick={() => {
@@ -382,7 +473,61 @@ const Home: NextPage = () => {
               </>
             )}
 
-            <Stack style={{ marginTop: "200px" }}>
+            <Divider />
+
+            {emailSent && (
+              <Alert severity="success">
+                Email sent! Will keep you in touch
+              </Alert>
+            )}
+            {!emailSent && (
+              <Paper variant="outlined" style={{ padding: "20px" }}>
+                <Alert severity="info">
+                  <AlertTitle>Stay up to date</AlertTitle>
+                  Share your email address to stay up to date about new features
+                  (optional)
+                </Alert>
+                <div
+                  style={{
+                    flexDirection: "row",
+                    display: "flex",
+                    width: "100%",
+                    marginTop: "20px",
+                  }}
+                >
+                  <TextField
+                    type="email"
+                    style={{ flex: 1 }}
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    error={!!emailErrorMessage}
+                    helperText={emailErrorMessage}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailErrorMessage("");
+                    }}
+                  />
+                  <Button
+                    style={{ marginLeft: "10px" }}
+                    variant="outlined"
+                    onClick={async () => {
+                      if (email && validateEmail(email)) {
+                        await sendEmail(email);
+                        setEmailErrorMessage("");
+                      } else {
+                        setEmailErrorMessage("Please enter a valid email");
+                      }
+                    }}
+                    startIcon={<SendIcon />}
+                  >
+                    Send
+                  </Button>
+                </div>
+              </Paper>
+            )}
+
+            <Stack style={{ marginTop: "50px" }}>
               <Typography
                 style={{ marginBottom: "20px" }}
                 variant="h4"

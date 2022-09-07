@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const useInterval = (callback: any, delay: number) => {
+export const useInterval = (callback: any, delay: number | null) => {
   const savedCallback = useRef();
 
   useEffect(() => {

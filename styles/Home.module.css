@@ -45,6 +45,13 @@
   font-size: 3rem;
 }
 
+.subtitle {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
 .title,
 .description {
   text-align: center;
