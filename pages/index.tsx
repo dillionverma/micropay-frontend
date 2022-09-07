@@ -169,7 +169,7 @@ const Home: NextPage = () => {
         await generate();
       }
     },
-    stopGeneratePolling ? null : 5000 // when set to null, we stop polling
+    stopGeneratePolling ? null : 2000 // when set to null, we stop polling
   );
 
   const theme = useTheme();
