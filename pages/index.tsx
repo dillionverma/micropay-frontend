@@ -255,7 +255,7 @@ const Home: NextPage = () => {
           <Stack direction="column" spacing={2} alignItems="center">
             <h1 className={styles.title}>Dalle-2 Image generator</h1>
             <h6 className={styles.subtitle}>
-              ⚡ A picture is worth 1000 sats ⚡
+              ⚡ A picture is worth a thousand sats ⚡
             </h6>
             <TextField
               error={!!errorMessage && images.length === 0}
