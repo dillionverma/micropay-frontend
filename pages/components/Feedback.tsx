@@ -20,7 +20,6 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
       feedback,
       invoiceId,
     });
-    setFeedbackSent(true);
   };
 
   return (
@@ -47,9 +46,10 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
           <StyledRating
             name="highlight-selected-only"
             value={rating}
-            onChange={(event, newValue) => {
+            onChange={async (event, newValue) => {
               if (newValue) {
                 setRating(newValue);
+                await sendFeedback(newValue, feedback);
               }
             }}
             size="large"
@@ -85,6 +85,7 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
               onClick={async () => {
                 if (feedback) {
                   await sendFeedback(rating || 0, feedback);
+                  setFeedbackSent(true);
                 }
               }}
               startIcon={<SendIcon />}
