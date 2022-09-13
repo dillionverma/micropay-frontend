@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Filter from "bad-words";
+import { Lsat } from "lsat-js";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { default as Image } from "next/image";
@@ -36,6 +37,7 @@ import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
 import FAQ from "./faq";
+
 const filter = new Filter();
 
 // this one was used quite a bit
@@ -116,6 +118,64 @@ const Home: NextPage = () => {
   const getInvoice = async (prompt: string): Promise<void> => {
     const response = await axios.post(`${SERVER_URL}/invoice`, { prompt });
     setInvoice(response.data);
+  };
+
+  const generateV2 = async (prompt: string): Promise<void> => {
+    try {
+      // const response = await fetch(`${SERVER_URL}/v2/generate`, {
+      //   method: "POST",
+      //   body: JSON.stringify({ prompt }),
+      //   // prompt,
+      // });
+
+      const response = await axios.post(`${SERVER_URL}/v2/generate`, {
+        prompt,
+      });
+    } catch (error) {
+      if (error?.response) {
+        if (error?.response.status === 402) {
+          const header = error?.response.headers["www-authenticate"];
+          const lsat = Lsat.fromHeader(header);
+          console.log(header);
+
+          // show some information about the lsat
+          console.log(lsat.invoice);
+          console.log(lsat.baseMacaroon);
+          console.log(lsat.paymentHash);
+        }
+      }
+      // if (error.response) {
+      //   console.log(error.response.headers);
+      //   console.log(Object.keys(error.response.headers));
+      //   const header = error.response.headers.get("WWW-Authenticate");
+      //   console.log("HEADER", header);
+      // }
+    }
+    // console.log(response.data);
+    // console.log(response.headers);
+    // console.log(response.status);
+
+    // .get("www-authenticate");
+    // const lsat = Lsat.fromHeader(header);
+
+    // show some information about the lsat
+    // console.log(lsat.invoice);
+    // console.log(lsat.baseMacaroon);
+    // console.log(lsat.paymentHash);
+
+    // // after the invoice is paid, you can add the preimage
+    // // this is just a stub for getting the preimage string
+    // // const preimage = getPreimage()
+    // const preimage = "test";
+
+    // // this will validate that the preimage is valid and throw if not
+    // lsat.setPreimage(preimage);
+
+    // return fetch("http://localhost:5000/protected", {
+    //   headers: {
+    //     Authorization: lsat.toToken(),
+    //   },
+    // });
   };
 
   const sendEmail = async (email: string): Promise<void> => {
@@ -250,6 +310,13 @@ const Home: NextPage = () => {
           .
         </strong>
       </Alert>
+
+      <div>
+        <h1>Test</h1>
+        <button onClick={async () => generateV2("dinosaur with clown makeup")}>
+          Generate
+        </button>
+      </div>
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
@@ -476,13 +543,27 @@ const Home: NextPage = () => {
 
             <Divider />
 
+            <Stack style={{ marginTop: "50px" }}>
+              <Typography
+                style={{ marginBottom: "20px" }}
+                variant="h4"
+                align="center"
+              >
+                Frequently asked questions (FAQ)
+              </Typography>
+              <FAQ />
+            </Stack>
+
             {emailSent && (
               <Alert severity="success">
                 Email sent! Will keep you in touch
               </Alert>
             )}
             {!emailSent && (
-              <Paper variant="outlined" style={{ padding: "20px" }}>
+              <Paper
+                variant="outlined"
+                style={{ padding: "20px", marginTop: "50px" }}
+              >
                 <Alert severity="info">
                   <AlertTitle>Stay up to date</AlertTitle>
                   Share your email address to stay up to date about new features
@@ -527,17 +608,6 @@ const Home: NextPage = () => {
                 </div>
               </Paper>
             )}
-
-            <Stack style={{ marginTop: "50px" }}>
-              <Typography
-                style={{ marginBottom: "20px" }}
-                variant="h4"
-                align="center"
-              >
-                Frequently asked questions (FAQ)
-              </Typography>
-              <FAQ />
-            </Stack>
           </Stack>
         </Container>
       </main>
