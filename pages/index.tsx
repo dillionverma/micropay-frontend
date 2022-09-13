@@ -9,14 +9,12 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
   LinearProgress,
   Link,
-  Paper,
   Snackbar,
   Stack,
   TextField,
@@ -35,7 +33,9 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
-import FAQ from "./faq";
+import FAQ from "./components/FAQ";
+import Feedback from "./components/Feedback";
+import SubscribeEmail from "./components/SubscribeEmail";
 const filter = new Filter();
 
 // this one was used quite a bit
@@ -56,12 +56,7 @@ interface Invoice {
 
 const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
 
-const validateEmail = (email: string) => {
-  var re = /\S+@\S+\.\S+/;
-  return re.test(email);
-};
-
-const SERVER_URL =
+export const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3001"
     : "https://lightning-dalle2-server.onrender.com";
@@ -77,10 +72,6 @@ const Home: NextPage = () => {
 
   const [refundInvoice, setRefundInvoice] = useState<string>("");
   const [refundInvoiceSent, setRefundInvoiceSent] = useState<boolean>(false);
-
-  const [email, setEmail] = useState<string>("");
-  const [emailSent, setEmailSent] = useState<boolean>(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
 
   const [stopGeneratePolling, setStopGeneratePolling] =
     useState<boolean>(false);
@@ -116,13 +107,6 @@ const Home: NextPage = () => {
   const getInvoice = async (prompt: string): Promise<void> => {
     const response = await axios.post(`${SERVER_URL}/invoice`, { prompt });
     setInvoice(response.data);
-  };
-
-  const sendEmail = async (email: string): Promise<void> => {
-    const response = await axios.post(`${SERVER_URL}/subscribe`, {
-      email,
-    });
-    setEmailSent(true);
   };
 
   const sendRefundInvoice = async (
@@ -345,6 +329,11 @@ const Home: NextPage = () => {
 
             {invoice && images.length === 0 && !showRefund && (
               <>
+                <Alert severity="warning">
+                  <AlertTitle>Warning</AlertTitle>
+                  Please wait around 20 seconds after successful payment to
+                  receive images.
+                </Alert>
                 <Typography variant="subtitle1" align="center">
                   Please pay 1000 satoshis to generate images.
                 </Typography>
@@ -390,15 +379,6 @@ const Home: NextPage = () => {
                     Copied!
                   </Alert>
                 </Snackbar>
-
-                <Alert severity="warning">
-                  <AlertTitle>Warning</AlertTitle>
-                  <strong>
-                    Don&apos;t switch tabs or you may lose your images!{" "}
-                  </strong>
-                  Please wait around 20 seconds after successful payment to
-                  receive images.
-                </Alert>
               </>
             )}
 
@@ -409,6 +389,8 @@ const Home: NextPage = () => {
                   Make sure you download your images before leaving this page
                   since we don&apos;t store them!
                 </Alert>
+
+                <Feedback invoiceId={invoice?.id} />
 
                 <ImageList
                   sx={{ width: "100%" }}
@@ -455,6 +437,7 @@ const Home: NextPage = () => {
                     </Link>
                   ))}
                 </ImageList>
+
                 <LoadingButton
                   variant="contained"
                   style={{ width: "100%" }}
@@ -474,70 +457,9 @@ const Home: NextPage = () => {
               </>
             )}
 
-            <Divider />
+            <SubscribeEmail />
 
-            {emailSent && (
-              <Alert severity="success">
-                Email sent! Will keep you in touch
-              </Alert>
-            )}
-            {!emailSent && (
-              <Paper variant="outlined" style={{ padding: "20px" }}>
-                <Alert severity="info">
-                  <AlertTitle>Stay up to date</AlertTitle>
-                  Share your email address to stay up to date about new features
-                  (optional)
-                </Alert>
-                <div
-                  style={{
-                    flexDirection: "row",
-                    display: "flex",
-                    width: "100%",
-                    marginTop: "20px",
-                  }}
-                >
-                  <TextField
-                    type="email"
-                    style={{ flex: 1 }}
-                    fullWidth
-                    id="email"
-                    label="Email"
-                    error={!!emailErrorMessage}
-                    helperText={emailErrorMessage}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailErrorMessage("");
-                    }}
-                  />
-                  <Button
-                    style={{ marginLeft: "10px" }}
-                    variant="outlined"
-                    onClick={async () => {
-                      if (email && validateEmail(email)) {
-                        await sendEmail(email);
-                        setEmailErrorMessage("");
-                      } else {
-                        setEmailErrorMessage("Please enter a valid email");
-                      }
-                    }}
-                    startIcon={<SendIcon />}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </Paper>
-            )}
-
-            <Stack style={{ marginTop: "50px" }}>
-              <Typography
-                style={{ marginBottom: "20px" }}
-                variant="h4"
-                align="center"
-              >
-                Frequently asked questions (FAQ)
-              </Typography>
-              <FAQ />
-            </Stack>
+            <FAQ />
           </Stack>
         </Container>
       </main>
