@@ -58,7 +58,7 @@ const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
 
 export const SERVER_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:3001"
+    ? "http://localhost:3002"
     : "https://lightning-dalle2-server.onrender.com";
 
 const Home: NextPage = () => {
@@ -69,6 +69,8 @@ const Home: NextPage = () => {
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+
+  const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
 
   const [refundInvoice, setRefundInvoice] = useState<string>("");
   const [refundInvoiceSent, setRefundInvoiceSent] = useState<boolean>(false);
@@ -105,8 +107,18 @@ const Home: NextPage = () => {
   }, [images]);
 
   const getInvoice = async (prompt: string): Promise<void> => {
-    const response = await axios.post(`${SERVER_URL}/invoice`, { prompt });
-    setInvoice(response.data);
+    const response = await axios.post(
+      `${SERVER_URL}/invoice`,
+      { prompt },
+      { validateStatus: () => true }
+    );
+
+    if (response.status === 200) {
+      setInvoice(response.data);
+      setServerErrorAlert(false);
+    } else {
+      setServerErrorAlert(true);
+    }
   };
 
   const sendRefundInvoice = async (
@@ -252,6 +264,17 @@ const Home: NextPage = () => {
                 setErrorMessage("");
               }}
             />
+
+            {serverErrorAlert && (
+              <Alert
+                severity="error"
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                <AlertTitle>
+                  Uh-oh, something went wrong in the server
+                </AlertTitle>
+              </Alert>
+            )}
 
             <LoadingButton
               variant="contained"
