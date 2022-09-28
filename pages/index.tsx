@@ -390,8 +390,6 @@ const Home: NextPage = () => {
                   since we don&apos;t store them!
                 </Alert>
 
-                <Feedback invoiceId={invoice?.id} />
-
                 <ImageList
                   sx={{ width: "100%" }}
                   cols={largeScreen ? 2 : 2}
@@ -454,12 +452,13 @@ const Home: NextPage = () => {
                 >
                   Download All
                 </LoadingButton>
+
+                <Feedback invoiceId={invoice?.id} />
               </>
             )}
 
-            <SubscribeEmail />
-
             <FAQ />
+            <SubscribeEmail />
           </Stack>
         </Container>
       </main>
