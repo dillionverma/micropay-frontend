@@ -375,7 +375,9 @@ const Home: NextPage = () => {
                   }}
                   value={invoice?.request || ""}
                 />
-
+                <Box sx={{ width: "100%", overflowWrap: "break-word" }}>
+                  <p>{invoice.request}</p>
+                </Box>
                 <Button
                   variant="outlined"
                   onClick={() => {
