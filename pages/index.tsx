@@ -182,6 +182,26 @@ const Home: NextPage = () => {
 
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
+  const generateButtonHandler = async () => {
+    if (!prompt) {
+      setErrorMessage("Please enter a prompt");
+    } else if (filter.isProfane(prompt)) {
+      setErrorMessage("Please enter a non-profane prompt");
+    } else {
+      await getInvoice(prompt);
+      setImages([]);
+      setOrderStatus(DEFAULT_ORDER_STATUS);
+      setStopGeneratePolling(false);
+      setProgress(0);
+    }
+  };
+
+  const handleKeypress = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      generateButtonHandler();
+    }
+  };
+
   return (
     <>
       <Head>
@@ -259,6 +279,7 @@ const Home: NextPage = () => {
               fullWidth
               label="Enter prompt"
               id="fullWidth"
+              onKeyDown={handleKeypress}
               onChange={(e) => {
                 setPrompt(e.target.value);
                 setErrorMessage("");
@@ -283,19 +304,7 @@ const Home: NextPage = () => {
               loading={invoice && images.length === 0 && !showRefund}
               // loadingIndicator="Waiting for payment…"
               loadingPosition="center"
-              onClick={async () => {
-                if (!prompt) {
-                  setErrorMessage("Please enter a prompt");
-                } else if (filter.isProfane(prompt)) {
-                  setErrorMessage("Please enter a non-profane prompt");
-                } else {
-                  await getInvoice(prompt);
-                  setImages([]);
-                  setOrderStatus(DEFAULT_ORDER_STATUS);
-                  setStopGeneratePolling(false);
-                  setProgress(0);
-                }
-              }}
+              onClick={() => generateButtonHandler()}
             >
               Generate
             </LoadingButton>
