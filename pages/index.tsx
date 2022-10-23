@@ -194,6 +194,11 @@ const Home: NextPage = () => {
       setStopGeneratePolling(false);
       setProgress(0);
     }
+    setTimeout(() => {
+      document
+        .getElementById("anchor-invoice")!
+        .scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const handleKeypress = (e: KeyboardEvent) => {
@@ -361,7 +366,7 @@ const Home: NextPage = () => {
 
             {invoice && images.length === 0 && !showRefund && (
               <>
-                <Alert severity="warning">
+                <Alert severity="warning" id="anchor-invoice">
                   <AlertTitle>Warning</AlertTitle>
                   Please wait around 20 seconds after successful payment to
                   receive images.
@@ -375,7 +380,6 @@ const Home: NextPage = () => {
                 <Box sx={{ width: "100%" }}>
                   <LinearProgress variant="determinate" value={progress} />
                 </Box>
-
                 <QRCodeSVG
                   width={200}
                   height={200}
@@ -397,7 +401,6 @@ const Home: NextPage = () => {
                 >
                   Copy invoice
                 </Button>
-
                 <Snackbar
                   open={open}
                   autoHideDuration={3000}
