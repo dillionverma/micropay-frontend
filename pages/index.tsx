@@ -29,7 +29,7 @@ import Head from "next/head";
 import { default as Image } from "next/image";
 import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
@@ -80,16 +80,6 @@ const Home: NextPage = () => {
   const [orderStatus, setOrderStatus] = useState<string>(DEFAULT_ORDER_STATUS);
   const [open, setOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (orderStatus === "INVOICE_NOT_PAID") {
-      setProgress(0);
-    } else if (
-      orderStatus === "Invoice paid! Dalle-2 is currently generating images..."
-    ) {
-      setProgress(70);
-    }
-  }, [orderStatus]);
-
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
     const unsavedChanges = images.length > 0;
@@ -106,9 +96,9 @@ const Home: NextPage = () => {
     };
   }, [images]);
 
-  const getInvoice = async (prompt: string): Promise<void> => {
+  const generate = async (prompt: string): Promise<void> => {
     const response = await axios.post(
-      `${SERVER_URL}/invoice`,
+      `${SERVER_URL}/generate`,
       { prompt },
       { validateStatus: () => true }
     );
@@ -132,21 +122,14 @@ const Home: NextPage = () => {
     setRefundInvoiceSent(true);
   };
 
-  const generate = async (): Promise<void> => {
-    if (!invoice?.id || !prompt) return;
-    const response = await fetch(`${SERVER_URL}/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        invoiceId: invoice.id,
-      }),
-    });
-    const data = await response.json();
-
+  const getStatus = async (): Promise<void> => {
+    if (!invoice?.id) return;
+    const response = await axios.get(
+      `${SERVER_URL}/generate/${invoice.id}/status`
+    );
+    const data = response.data;
     setOrderStatus(data.message);
+    setProgress(data.progress);
     if (data.status === "DALLE_GENERATED") {
       setImages(data.images);
       setStopGeneratePolling(true);
@@ -162,10 +145,10 @@ const Home: NextPage = () => {
   useInterval(
     async () => {
       if (invoice && images.length === 0) {
-        await generate();
+        await getStatus();
       }
     },
-    stopGeneratePolling ? null : 2000 // when set to null, we stop polling
+    stopGeneratePolling ? null : 1000 // when set to null, we stop polling
   );
 
   const theme = useTheme();
@@ -188,7 +171,7 @@ const Home: NextPage = () => {
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
-      await getInvoice(prompt);
+      await generate(prompt);
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
@@ -201,7 +184,7 @@ const Home: NextPage = () => {
     }, 100);
   };
 
-  const handleKeypress = (e: KeyboardEvent) => {
+  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       generateButtonHandler();
     }
@@ -375,7 +358,7 @@ const Home: NextPage = () => {
                   Please pay 1000 satoshis to generate images.
                 </Typography>
                 <Typography variant="subtitle1" align="center">
-                  Order status: {orderStatus}
+                  Status: {orderStatus}
                 </Typography>
                 <Box sx={{ width: "100%" }}>
                   <LinearProgress variant="determinate" value={progress} />
