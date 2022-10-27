@@ -33,9 +33,7 @@ import { KeyboardEvent, useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
-import FAQ from "./components/FAQ";
 import Feedback from "./components/Feedback";
-import SubscribeEmail from "./components/SubscribeEmail";
 const filter = new Filter();
 
 // this one was used quite a bit
@@ -221,39 +219,6 @@ const Home: NextPage = () => {
         `}
       </Script>
 
-      <Alert
-        severity="error"
-        style={{ width: "100%", justifyContent: "center" }}
-      >
-        <AlertTitle>
-          Warning: This software is still very early in development. Use at your
-          own risk.
-        </AlertTitle>
-        We&apos;re currently dealing with increased traffic.{" "}
-        <strong>
-          If you paid an invoice and didn&apos;t recieve images, please share
-          the invoice you paid to this{" "}
-          <a
-            href="https://forms.gle/c2tGbDJ2Hg9jvVbF9"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "rgb(103, 58, 183)" }}
-            // google form color code hex
-          >
-            form.
-          </a>{" "}
-          For status updates, join our Telegram support group{" "}
-          <a
-            href="https://t.me/+zGVesHQRbl04NTA5"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#229ED9" }}
-          >
-            here
-          </a>
-          .
-        </strong>
-      </Alert>
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
@@ -477,8 +442,8 @@ const Home: NextPage = () => {
               </>
             )}
 
-            <FAQ />
-            <SubscribeEmail />
+            {/* <FAQ /> */}
+            {/* <SubscribeEmail /> */}
           </Stack>
         </Container>
       </main>
