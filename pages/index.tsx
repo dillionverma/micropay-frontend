@@ -2,12 +2,14 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
+import VerifiedIcon from "@mui/icons-material/Verified";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
   Box,
   Button,
+  Chip,
   Container,
   IconButton,
   ImageList,
@@ -30,6 +32,7 @@ import { default as Image } from "next/image";
 import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
+import { requestProvider } from "webln";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
@@ -67,6 +70,7 @@ const Home: NextPage = () => {
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [weblnEnabled, setWebLnEnabled] = useState<boolean>(false);
 
   const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
 
@@ -94,9 +98,9 @@ const Home: NextPage = () => {
     };
   }, [images]);
 
-  const generate = async (prompt: string): Promise<void> => {
+  const getInvoice = async (prompt: string): Promise<Invoice | null> => {
     const response = await axios.post(
-      `${SERVER_URL}/generate`,
+      `${SERVER_URL}/invoice`,
       { prompt },
       { validateStatus: () => true }
     );
@@ -104,8 +108,10 @@ const Home: NextPage = () => {
     if (response.status === 200) {
       setInvoice(response.data);
       setServerErrorAlert(false);
+      return response.data;
     } else {
       setServerErrorAlert(true);
+      return null;
     }
   };
 
@@ -169,30 +175,33 @@ const Home: NextPage = () => {
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
-      await generate(prompt);
+      const invoice = await getInvoice(prompt);
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
       setProgress(0);
+      try {
+        const webln = await requestProvider();
+        setWebLnEnabled(true);
+        if (invoice) await webln.sendPayment(invoice.request);
+      } catch (err) {
+        // Tell the user what went wrong
+        console.error(err);
+      }
     }
-    setTimeout(() => {
-      document
-        .getElementById("anchor-invoice")!
-        .scrollIntoView({ behavior: "smooth" });
-    }, 100);
   };
 
-  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeypress = async (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      generateButtonHandler();
+      await generateButtonHandler();
     }
   };
 
   return (
     <>
       <Head>
-        <title>Dalle-2 Image Generator</title>
-        <meta name="description" content="Dalle-2 Image Generator" />
+        <title>micropay</title>
+        <meta name="description" content="Micropay" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="icon" href="/favicon.ico" />
         <link
@@ -314,20 +323,10 @@ const Home: NextPage = () => {
 
             {invoice && images.length === 0 && !showRefund && (
               <>
-                <Alert severity="warning" id="anchor-invoice">
-                  <AlertTitle>Warning</AlertTitle>
-                  Please wait around 20 seconds after successful payment to
-                  receive images.
-                </Alert>
                 <Typography variant="subtitle1" align="center">
                   Please pay 1000 satoshis to generate images.
                 </Typography>
-                <Typography variant="subtitle1" align="center">
-                  Status: {orderStatus}
-                </Typography>
-                <Box sx={{ width: "100%" }}>
-                  <LinearProgress variant="determinate" value={progress} />
-                </Box>
+
                 <QRCodeSVG
                   width={200}
                   height={200}
@@ -336,9 +335,18 @@ const Home: NextPage = () => {
                   }}
                   value={invoice?.request || ""}
                 />
-                <Box sx={{ width: "100%", overflowWrap: "break-word" }}>
-                  <p>{invoice.request}</p>
+
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="subtitle1" align="center">
+                    Status: {orderStatus}
+                  </Typography>
+                  <LinearProgress
+                    style={{ marginTop: 10 }}
+                    variant="determinate"
+                    value={progress}
+                  />
                 </Box>
+
                 <Button
                   variant="outlined"
                   onClick={() => {
@@ -364,6 +372,16 @@ const Home: NextPage = () => {
                     Copied!
                   </Alert>
                 </Snackbar>
+                {weblnEnabled && (
+                  <Chip
+                    style={{ marginTop: 30 }}
+                    icon={<VerifiedIcon />}
+                    label="webln enabled"
+                    size="small"
+                    variant="filled"
+                    color="success"
+                  />
+                )}
               </>
             )}
 
