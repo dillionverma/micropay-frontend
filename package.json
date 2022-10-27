@@ -23,7 +23,8 @@
     "next": "12.2.5",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "webln": "^0.3.0"
   },
   "devDependencies": {
     "@types/bad-words": "^3.0.1",
