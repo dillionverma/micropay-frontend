@@ -59,7 +59,7 @@ const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
 export const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3002"
-    : "https://lightning-dalle2-server.onrender.com";
+    : "https://micropay-server.onrender.com";
 
 const Home: NextPage = () => {
   const [invoice, setInvoice] = useState<Invoice>();
