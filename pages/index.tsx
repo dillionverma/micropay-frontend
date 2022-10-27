@@ -29,7 +29,7 @@ import Head from "next/head";
 import { default as Image } from "next/image";
 import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
@@ -201,7 +201,7 @@ const Home: NextPage = () => {
     }, 100);
   };
 
-  const handleKeypress = (e: KeyboardEvent) => {
+  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       generateButtonHandler();
     }
