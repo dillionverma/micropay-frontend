@@ -1,7 +1,6 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import SendIcon from "@mui/icons-material/Send";
-import TelegramIcon from "@mui/icons-material/Telegram";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -28,7 +27,6 @@ import axios from "axios";
 import Filter from "bad-words";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { default as Image } from "next/image";
 import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
@@ -465,50 +463,6 @@ const Home: NextPage = () => {
           </Stack>
         </Container>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://t.me/+zGVesHQRbl04NTA5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <TelegramIcon sx={{ color: "#229ED9" }} />
-        </a>
-        {/* <Typography variant="subtitle1" align="center">
-          Made with ❤️ by{" "}
-          <a
-            href="https://twitter.com/dillionverma"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#229ED9" }}
-          >
-            Dillion{" "}
-          </a>
-        </Typography> */}
-        <a
-          href="https://lightning.network/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image
-              src="/bitcoin.svg"
-              alt="Vercel Logo"
-              width={20}
-              height={20}
-            />
-          </span>
-          <span className={styles.logo}>
-            <Image
-              src="/lightning.svg"
-              alt="Vercel Logo"
-              width={20}
-              height={20}
-            />
-          </span>
-        </a>
-      </footer>
     </>
   );
 };
