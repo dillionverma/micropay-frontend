@@ -16,10 +16,20 @@ export default function Footer() {
           container
           spacing={2}
           justifyContent="center"
+          alignItems="center"
           textAlign="center"
-          style={{ borderTop: "1px solid rgba(0, 0, 0, 0.12)" }}
+          style={{
+            borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+          }}
         >
-          <Grid item xs={12} sm={6} md={3} flexDirection="row">
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            flexDirection="row"
+            style={{ paddingBottom: "16px" }}
+          >
             <Link href="/">
               <img
                 src="/micropay.png"
@@ -70,6 +80,7 @@ export default function Footer() {
             md={3}
             flexDirection="column"
             display={"flex"}
+            style={{ paddingBottom: "16px" }}
           >
             <a
               href="https://micropay.canny.io/"
@@ -86,13 +97,20 @@ export default function Footer() {
             >
               Status Page
             </a>
-
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            flexDirection="column"
+            display={"flex"}
+            style={{ paddingBottom: "16px" }}
+          >
             <Link href="/about">About</Link>
             <Link href="/how-to-use">How to use</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="subtitle1" align="center">
+            {/* <Typography variant="subtitle1" align="center">
               Made with ❤️ by
               <a
                 href="https://twitter.com/dillionverma"
@@ -134,7 +152,63 @@ export default function Footer() {
                   height={20}
                 />
               </div>
-            </a>
+            </a> */}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            flexDirection="column"
+            display={"flex"}
+            alignItems="center"
+            justifyContent="center"
+            // variant="outline"
+            style={{ borderTop: "1px solid rgba(0, 0, 0, 0.12)" }}
+          >
+            <Typography variant="subtitle1" align="center">
+              Made with ❤️ by
+              <a
+                href="https://twitter.com/dillionverma"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#229ED9" }}
+              >
+                Dillion
+              </a>
+              and
+              <a
+                href="https://twitter.com/haseabamin"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#229ED9" }}
+              >
+                Haseab.
+              </a>
+              <a
+                href="https://lightning.network/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Powered by{" "}
+                <div
+                  style={{
+                    display: "inline-flex",
+                    position: "relative",
+                    top: "3px",
+                  }}
+                >
+                  <Image
+                    className={styles.icon}
+                    src="/lightning.svg"
+                    alt="Vercel Logo"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                .
+              </a>
+            </Typography>
           </Grid>
         </Grid>
       </footer>
