@@ -1,26 +1,16 @@
+import { Container } from "@mui/material";
+
 export default function PrivacyPolicy() {
   return (
-    <div
-      style={
-        {
-          // height: "50vh",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // display: "flex",
-        }
-      }
-    >
+    <Container maxWidth="sm">
       <div
         style={{
-          marginTop: "8%",
           textAlign: "center",
         }}
       >
         <h1>Privacy Policy</h1>
       </div>
-      <div
-        style={{ marginLeft: "33%", marginRight: "33%", paddingBottom: "10%" }}
-      >
+      <div>
         <p>
           We at micropay (together with our affiliates, micropay, “we”, “our” or
           “us”) respect your privacy and are strongly committed to keeping
@@ -414,6 +404,6 @@ export default function PrivacyPolicy() {
           revised Privacy&nbsp;Policy.
         </p>
       </div>
-    </div>
+    </Container>
   );
 }
