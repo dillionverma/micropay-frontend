@@ -149,6 +149,11 @@ export default function PrivacyPolicy() {
           described in this Privacy&nbsp;Policy.
         </p>
         <p>
+          Furthermore, we may post image generations and their respective
+          prompts to social platforms (e.g. Twitter) without disclosing the
+          identity or personal information of the person who generated it.
+        </p>
+        <p>
           <strong>
             3. SHARING AND DISCLOSURE OF PERSONAL&nbsp;INFORMATION
           </strong>
