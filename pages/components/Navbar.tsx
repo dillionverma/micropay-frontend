@@ -18,7 +18,7 @@ export default function DrawerAppBar() {
     <>
       <AppBar
         component="nav"
-        style={{ backgroundColor: "white" }}
+        style={{ backgroundColor: "white", position: "relative" }}
         variant="outlined"
       >
         <Toolbar>
