@@ -6,10 +6,10 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 
 const navItems = [
-  {
-    name: "About",
-    link: "/about",
-  },
+  // {
+  //   name: "About",
+  //   link: "/about",
+  // },
   { name: "How to Use", link: "/how-to-use" },
 ];
 
@@ -19,6 +19,7 @@ export default function DrawerAppBar() {
       <AppBar
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
+        elevation={0}
         variant="outlined"
       >
         <Toolbar>
@@ -35,6 +36,7 @@ export default function DrawerAppBar() {
                   display: "flex",
                   width: "100px",
                   height: "auto",
+                  cursor: "pointer",
                 }}
               />
             </Typography>
