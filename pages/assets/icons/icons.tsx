@@ -3,15 +3,15 @@ import CashappSVG from "./cashapp.svg";
 import LightningSVG from "./lightning.svg";
 import StrikeSVG from "./strike.svg";
 
-export const StrikeIcon = (props) => {
+export const StrikeIcon = (props: any) => {
   return (
-    <SvgIcon>
+    <SvgIcon {...props}>
       <StrikeSVG />
     </SvgIcon>
   );
 };
 
-export const CashappIcon = (props) => {
+export const CashappIcon = (props: any) => {
   return (
     <SvgIcon {...props}>
       <CashappSVG />
@@ -20,7 +20,7 @@ export const CashappIcon = (props) => {
 };
 
 // LightningIcon
-export const LightningIcon = (props) => {
+export const LightningIcon = (props: any) => {
   return (
     <SvgIcon {...props}>
       <LightningSVG />
