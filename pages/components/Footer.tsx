@@ -25,8 +25,7 @@ export default function Footer() {
           <Grid
             item
             xs={12}
-            sm={6}
-            md={3}
+            sm={3}
             flexDirection="row"
             style={{ paddingBottom: "16px" }}
           >
@@ -76,8 +75,7 @@ export default function Footer() {
           <Grid
             item
             xs={12}
-            sm={6}
-            md={3}
+            sm={3}
             flexDirection="column"
             display={"flex"}
             style={{ paddingBottom: "16px" }}
@@ -101,8 +99,7 @@ export default function Footer() {
           <Grid
             item
             xs={12}
-            sm={6}
-            md={3}
+            sm={3}
             flexDirection="column"
             display={"flex"}
             style={{ paddingBottom: "16px" }}
@@ -158,7 +155,6 @@ export default function Footer() {
             item
             xs={12}
             sm={12}
-            md={12}
             flexDirection="column"
             display={"flex"}
             alignItems="center"

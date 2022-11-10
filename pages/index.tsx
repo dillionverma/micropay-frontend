@@ -1,3 +1,4 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import SendIcon from "@mui/icons-material/Send";
@@ -6,10 +7,14 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
+  Badge,
+  BadgeProps,
   Box,
   Button,
   Chip,
   Container,
+  Divider,
+  Grid,
   IconButton,
   ImageList,
   ImageListItem,
@@ -23,6 +28,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
 import axios from "axios";
 import Filter from "bad-words";
 import type { NextPage } from "next";
@@ -34,6 +41,7 @@ import { requestProvider } from "webln";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
 import { useInterval } from "../utils/useInterval";
+import { CashappIcon, LightningIcon, StrikeIcon } from "./assets/icons/icons";
 import Feedback from "./components/Feedback";
 const filter = new Filter();
 
@@ -53,12 +61,20 @@ interface Invoice {
   tokens: number;
 }
 
-const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
+const DEFAULT_ORDER_STATUS = "Order received! Waiting for payment...";
 
 export const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3002"
     : "https://micropay-server.onrender.com";
+
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    right: -3,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: "0 4px",
+  },
+}));
 
 const Home: NextPage = () => {
   const [invoice, setInvoice] = useState<Invoice>();
@@ -67,7 +83,7 @@ const Home: NextPage = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(20);
   const [weblnEnabled, setWebLnEnabled] = useState<boolean>(false);
 
   const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
@@ -79,6 +95,8 @@ const Home: NextPage = () => {
     useState<boolean>(false);
   const [orderStatus, setOrderStatus] = useState<string>(DEFAULT_ORDER_STATUS);
   const [open, setOpen] = useState<boolean>(false);
+
+  const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -98,7 +116,7 @@ const Home: NextPage = () => {
 
   const getInvoice = async (prompt: string): Promise<Invoice | null> => {
     const response = await axios.post(
-      `${SERVER_URL}/invoice`,
+      `${SERVER_URL}/generate`,
       { prompt },
       { validateStatus: () => true }
     );
@@ -177,7 +195,7 @@ const Home: NextPage = () => {
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
-      setProgress(0);
+      setProgress(20);
       try {
         const webln = await requestProvider();
         setWebLnEnabled(true);
@@ -187,6 +205,14 @@ const Home: NextPage = () => {
         console.error(err);
       }
     }
+  };
+
+  const reset = () => {
+    setInvoice(undefined);
+    setImages([]);
+    setOrderStatus(DEFAULT_ORDER_STATUS);
+    setStopGeneratePolling(false);
+    setProgress(20);
   };
 
   const handleKeypress = async (e: KeyboardEvent<HTMLDivElement>) => {
@@ -229,45 +255,116 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
-            <h1 className={styles.title}>Dalle-2 Image generator</h1>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                style={{ width: "22%", paddingTop: "4px" }}
+                src="./micro.png"
+                alt=""
+              />
+              <h1 className={styles.title}>Dalle-2 Generator</h1>
+            </div>
             <h6 className={styles.subtitle}>
               ⚡ A picture is worth a thousand sats ⚡
             </h6>
-            <TextField
-              error={!!errorMessage && images.length === 0}
-              helperText={errorMessage}
-              fullWidth
-              label="Enter prompt"
-              id="fullWidth"
-              onKeyDown={handleKeypress}
-              onChange={(e) => {
-                setPrompt(e.target.value);
-                setErrorMessage("");
-              }}
-            />
 
-            {serverErrorAlert && (
-              <Alert
-                severity="error"
-                style={{ width: "100%", justifyContent: "center" }}
-              >
-                <AlertTitle>
-                  Uh-oh, something went wrong in the server
-                </AlertTitle>
-              </Alert>
+            {!invoice && (
+              <>
+                <TextField
+                  error={!!errorMessage && images.length === 0}
+                  helperText={errorMessage}
+                  fullWidth
+                  label="Enter prompt"
+                  id="fullWidth"
+                  onKeyDown={handleKeypress}
+                  onChange={(e) => {
+                    setPrompt(e.target.value);
+                    setErrorMessage("");
+                  }}
+                />
+
+                {serverErrorAlert && (
+                  <Alert
+                    severity="error"
+                    style={{ width: "100%", justifyContent: "center" }}
+                  >
+                    <AlertTitle>
+                      Uh-oh, something went wrong in the server
+                    </AlertTitle>
+                  </Alert>
+                )}
+
+                <Grid
+                  container
+                  spacing={2}
+                  direction="row"
+                  justifyContent="center"
+                  className="button-container"
+                  // alignItems={"stretch"}
+                >
+                  <Grid item xs={12} sm={6}>
+                    <StyledBadge
+                      badgeContent={0}
+                      color="success"
+                      style={{ width: "100%" }}
+                    >
+                      <LoadingButton
+                        variant="contained"
+                        style={{ width: "100%" }}
+                        color="primary"
+                        loading={invoice && images.length === 0 && !showRefund}
+                        // loadingIndicator="Waiting for payment…"
+                        loadingPosition="center"
+                        onClick={() => generateButtonHandler()}
+                      >
+                        Dalle ($0.20)
+                      </LoadingButton>
+                    </StyledBadge>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <StyledBadge
+                      badgeContent={3}
+                      color="success"
+                      style={{ width: "100%" }}
+                    >
+                      <LoadingButton
+                        variant="contained"
+                        style={{ width: "100%" }}
+                        color="secondary"
+                        loading={invoice && images.length === 0 && !showRefund}
+                        // loadingIndicator="Waiting for payment…"
+                        loadingPosition="center"
+                        // onClick={() => generateButtonHandler()}
+                      >
+                        Non Dalle (FREE)
+                      </LoadingButton>
+                    </StyledBadge>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <LoadingButton
+                      variant="contained"
+                      style={{
+                        width: "100%",
+                        backgroundColor: grey[200],
+                        color: "black",
+                      }}
+                      loading={invoice && images.length === 0 && !showRefund}
+                      // loadingIndicator="Waiting for payment…"
+                      loadingPosition="center"
+                      onClick={() => setShowBulkPurchase(!showBulkPurchase)}
+                    >
+                      Bulk Purchase
+                    </LoadingButton>
+                  </Grid>
+                </Grid>
+              </>
             )}
-
-            <LoadingButton
-              variant="contained"
-              style={{ width: "100%" }}
-              color="primary"
-              loading={invoice && images.length === 0 && !showRefund}
-              // loadingIndicator="Waiting for payment…"
-              loadingPosition="center"
-              onClick={() => generateButtonHandler()}
-            >
-              Generate
-            </LoadingButton>
 
             {showRefund && !refundInvoiceSent && (
               <>
@@ -321,40 +418,158 @@ const Home: NextPage = () => {
 
             {invoice && images.length === 0 && !showRefund && (
               <>
-                <Typography variant="subtitle1" align="center">
-                  Please pay 1000 satoshis to generate images.
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "12%",
+                    paddingRight: "12%",
+                  }}
+                >
+                  Please scan the QR Code below to generate images (cost: 1000
+                  satoshis or ~$0.20)
                 </Typography>
 
-                <QRCodeSVG
-                  width={200}
-                  height={200}
-                  onClick={() => {
-                    window.open(`lightning:${invoice?.request}`);
-                  }}
-                  value={invoice?.request || ""}
-                />
+                <Grid
+                  container
+                  spacing={2}
+                  direction="row"
+                  justifyContent="center"
+                  className="button-container"
+                  // alignItems={"stretch"}
+                >
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    justifyContent="center"
+                    display={"flex"}
+                    flexDirection="column"
+                  >
+                    <QRCodeSVG
+                      style={{
+                        width: "100%",
+                        alignSelf: "center",
+                      }}
+                      width={200}
+                      height={200}
+                      onClick={() => {
+                        window.open(`lightning:${invoice?.request}`);
+                      }}
+                      value={invoice?.request || ""}
+                    />
+                    <div style={{ paddingBottom: "6%" }}></div>
+                    <Button
+                      style={{ margin: "10px auto", width: "70%" }}
+                      variant="outlined"
+                      onClick={() => {
+                        setOpen(true);
+                        navigator.clipboard.writeText(invoice.request);
+                      }}
+                      startIcon={<ContentCopyIcon />}
+                    >
+                      Copy invoice
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} textAlign="center">
+                    <Typography variant="h5" gutterBottom>
+                      Recommended
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      style={{
+                        color: "#00D632",
+                        borderColor: "#00D632",
+                        width: "100%",
+                        margin: "8px 0",
+                      }}
+                      onClick={() => {
+                        window.open("https://cash.app/$");
+                      }}
+                      startIcon={<CashappIcon />}
+                    >
+                      Open Cash App
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      style={{
+                        color: "#000",
+                        borderColor: "#000",
+                        width: "100%",
+                        margin: "8px 0",
+                      }}
+                      startIcon={<StrikeIcon />}
+                      onClick={() => {
+                        window.open("https://strike.me/");
+                      }}
+                    >
+                      Open Strike.me
+                    </Button>
+                    <Divider style={{ margin: "16px 0" }} />
+                    <Typography variant="h5" gutterBottom>
+                      Advanced
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      style={{
+                        color: "#f7931a",
+                        borderColor: "#f7931a",
+                        width: "100%",
+                        margin: "8px 0",
+                      }}
+                      startIcon={<LightningIcon />}
+                      onClick={() => {
+                        window.open(`lightning:${invoice?.request}`);
+                      }}
+                    >
+                      Open Lightning App
+                    </Button>
+                  </Grid>
+                </Grid>
 
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="subtitle1" align="center">
                     Status: {orderStatus}
                   </Typography>
                   <LinearProgress
-                    style={{ marginTop: 10 }}
+                    style={{ margin: "10px 0" }}
                     variant="determinate"
                     value={progress}
                   />
+                  <Typography variant="subtitle1" align="center">
+                    Experiencing problems? Message us on{" "}
+                    <a
+                      href="https://t.me/+zGVesHQRbl04NTA5"
+                      style={{ color: "#0070f3" }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Telegram
+                    </a>
+                    .
+                  </Typography>
                 </Box>
+
+                <div style={{ paddingTop: "2%" }}></div>
 
                 <Button
                   variant="outlined"
-                  onClick={() => {
-                    setOpen(true);
-                    navigator.clipboard.writeText(invoice.request);
+                  color="primary"
+                  style={{
+                    // color: "#f7931a",
+                    // borderColor: "#f7931a",
+                    // width: "100%",
+                    margin: "8px 0",
                   }}
-                  startIcon={<ContentCopyIcon />}
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => {
+                    reset();
+                  }}
                 >
-                  Copy invoice
+                  Go Back
                 </Button>
+
                 <Snackbar
                   open={open}
                   autoHideDuration={3000}
@@ -370,7 +585,7 @@ const Home: NextPage = () => {
                     Copied!
                   </Alert>
                 </Snackbar>
-                {weblnEnabled && (
+                {/* {weblnEnabled && (
                   <Chip
                     style={{ marginTop: 30 }}
                     icon={<VerifiedIcon />}
@@ -379,7 +594,7 @@ const Home: NextPage = () => {
                     variant="filled"
                     color="success"
                   />
-                )}
+                )} */}
               </>
             )}
 
