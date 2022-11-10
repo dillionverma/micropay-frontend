@@ -14,6 +14,7 @@ const nextConfig = {
     });
 
     config.experiments = {
+      layers: true,
       asyncWebAssembly: true,
     };
     return config;
