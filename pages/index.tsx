@@ -328,6 +328,7 @@ const Home: NextPage = () => {
                   label="Type something you won't find online"
                   // label="Use your imagination to create something new"
                   placeholder={promptPlaceholder}
+                  value={prompt}
                   multiline
                   id="fullWidth"
                   InputProps={{
@@ -335,7 +336,12 @@ const Home: NextPage = () => {
                       //wand icon
                       <InputAdornment position="end">
                         <Tooltip title="Generate random prompt" placement="top">
-                          <IconButton aria-label="generate" onClick={() => {}}>
+                          <IconButton
+                            aria-label="generate"
+                            onClick={() => {
+                              setPrompt(getRandomElement(officialPrompts));
+                            }}
+                          >
                             <AutoFixHighIcon style={{ color: "#000" }} />
                           </IconButton>
                         </Tooltip>
