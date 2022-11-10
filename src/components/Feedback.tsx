@@ -4,7 +4,7 @@ import { useState } from "react";
 import StyledRating, { customIcons, IconContainer } from "./StyledRating";
 
 import SendIcon from "@mui/icons-material/Send";
-import { SERVER_URL } from "..";
+import { SERVER_URL } from "../../pages";
 
 const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
   const [rating, setRating] = useState<number | null>(null);

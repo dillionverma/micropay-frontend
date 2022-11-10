@@ -42,12 +42,16 @@ import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { requestProvider } from "webln";
+import {
+  CashappIcon,
+  LightningIcon,
+  StrikeIcon,
+} from "../src/assets/icons/icons";
+import Feedback from "../src/components/Feedback";
+import { downloadImage } from "../src/utils/downloadImage";
+import { getRandomElement } from "../src/utils/index";
+import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
-import { downloadImage } from "../utils/downloadImage";
-import { getRandomElement } from "../utils/index";
-import { useInterval } from "../utils/useInterval";
-import { CashappIcon, LightningIcon, StrikeIcon } from "./assets/icons/icons";
-import Feedback from "./components/Feedback";
 const filter = new Filter();
 
 // this one was used quite a bit
