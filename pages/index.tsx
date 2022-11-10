@@ -239,7 +239,7 @@ const Home: NextPage = () => {
 
   const [promptPressed, setPromptPressed] = useState<boolean>(false);
   const [promptPlaceholder, setPromptPlaceholder] = useState<string>(
-    getRandomElement(officialPrompts)
+    "An avocado in the form of an armchair"
   );
   const getPrompt = () => {
     const randomPrompt =
@@ -332,6 +332,7 @@ const Home: NextPage = () => {
                   id="fullWidth"
                   InputProps={{
                     endAdornment: (
+                      //wand icon
                       <InputAdornment position="end">
                         <Tooltip title="Generate random prompt" placement="top">
                           <IconButton aria-label="generate" onClick={() => {}}>
