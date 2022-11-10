@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.95",
     "@mui/material": "^5.10.1",
+    "@svgr/webpack": "^6.5.1",
     "axios": "^0.27.2",
     "bad-words": "^3.0.4",
     "lightning": "^5.20.0",

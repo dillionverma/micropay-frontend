@@ -6,10 +6,10 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 
 const navItems = [
-  {
-    name: "About",
-    link: "/about",
-  },
+  // {
+  //   name: "About",
+  //   link: "/about",
+  // },
   { name: "How to Use", link: "/how-to-use" },
 ];
 
@@ -19,7 +19,8 @@ export default function DrawerAppBar() {
       <AppBar
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
-        variant="outlined"
+        elevation={0}
+        // variant="outlined"
       >
         <Toolbar>
           <Link href="/">
@@ -29,12 +30,13 @@ export default function DrawerAppBar() {
               sx={{ flexGrow: 1, display: { sm: "block" } }}
             >
               <img
-                src="/micropay.png"
+                src="/apple-icon.png"
                 alt="Micropay Logo"
                 style={{
                   display: "flex",
-                  width: "100px",
+                  width: "70px",
                   height: "auto",
+                  cursor: "pointer",
                 }}
               />
             </Typography>
