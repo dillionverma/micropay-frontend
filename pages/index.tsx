@@ -61,7 +61,7 @@ interface Invoice {
   tokens: number;
 }
 
-const DEFAULT_ORDER_STATUS = "Invoice not paid yet";
+const DEFAULT_ORDER_STATUS = "Order received! Waiting for payment...";
 
 export const SERVER_URL =
   process.env.NODE_ENV === "development"
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(20);
   const [weblnEnabled, setWebLnEnabled] = useState<boolean>(false);
 
   const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
@@ -195,7 +195,7 @@ const Home: NextPage = () => {
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
-      setProgress(0);
+      setProgress(20);
       try {
         const webln = await requestProvider();
         setWebLnEnabled(true);
@@ -212,7 +212,7 @@ const Home: NextPage = () => {
     setImages([]);
     setOrderStatus(DEFAULT_ORDER_STATUS);
     setStopGeneratePolling(false);
-    setProgress(0);
+    setProgress(20);
   };
 
   const handleKeypress = async (e: KeyboardEvent<HTMLDivElement>) => {
@@ -263,7 +263,11 @@ const Home: NextPage = () => {
                 justifyContent: "center",
               }}
             >
-              <img style={{ width: "25%" }} src="./micro.png" alt="" />
+              <img
+                style={{ width: "22%", paddingTop: "4px" }}
+                src="./micro.png"
+                alt=""
+              />
               <h1 className={styles.title}>Dalle-2 Generator</h1>
             </div>
             <h6 className={styles.subtitle}>
@@ -417,7 +421,11 @@ const Home: NextPage = () => {
                 <Typography
                   variant="subtitle1"
                   align="center"
-                  style={{ fontWeight: "bold" }}
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "12%",
+                    paddingRight: "12%",
+                  }}
                 >
                   Please scan the QR Code below to generate images (cost: 1000
                   satoshis or ~$0.20)
@@ -440,7 +448,10 @@ const Home: NextPage = () => {
                     flexDirection="column"
                   >
                     <QRCodeSVG
-                      style={{ width: "100%", alignSelf: "center" }}
+                      style={{
+                        width: "100%",
+                        alignSelf: "center",
+                      }}
                       width={200}
                       height={200}
                       onClick={() => {
@@ -448,6 +459,7 @@ const Home: NextPage = () => {
                       }}
                       value={invoice?.request || ""}
                     />
+                    <div style={{ paddingBottom: "6%" }}></div>
                     <Button
                       style={{ margin: "10px auto", width: "70%" }}
                       variant="outlined"
@@ -539,6 +551,8 @@ const Home: NextPage = () => {
                   </Typography>
                 </Box>
 
+                <div style={{ paddingTop: "2%" }}></div>
+
                 <Button
                   variant="outlined"
                   color="primary"
@@ -571,7 +585,7 @@ const Home: NextPage = () => {
                     Copied!
                   </Alert>
                 </Snackbar>
-                {weblnEnabled && (
+                {/* {weblnEnabled && (
                   <Chip
                     style={{ marginTop: 30 }}
                     icon={<VerifiedIcon />}
@@ -580,7 +594,7 @@ const Home: NextPage = () => {
                     variant="filled"
                     color="success"
                   />
-                )}
+                )} */}
               </>
             )}
 
