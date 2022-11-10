@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import SendIcon from "@mui/icons-material/Send";
-import { SERVER_URL } from "..";
+import { SERVER_URL } from "../../pages";
 
 const validateEmail = (email: string) => {
   var re = /\S+@\S+\.\S+/;
