@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
+import Layout from "../src/components/layout";
 import "../styles/globals.css";
-import Layout from "./components/layout";
 
 import { blue } from "@mui/material/colors";
 import CssBaseline from "@mui/material/CssBaseline";
