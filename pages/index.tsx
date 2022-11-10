@@ -405,38 +405,45 @@ const Home: NextPage = () => {
                       color="success"
                       style={{ width: "100%" }}
                     >
-                      <LoadingButton
-                        variant="contained"
-                        style={{
-                          width: "100%",
-                          backgroundColor: grey[200],
-                          color: "black",
-                        }}
-                        // color=""
-                        loading={invoice && images.length === 0 && !showRefund}
-                        // loadingIndicator="Waiting for payment…"
-                        loadingPosition="center"
-                        // onClick={() => generateButtonHandler()}
-                      >
-                        Non Dalle (FREE)
-                      </LoadingButton>
+                      <Tooltip title="Coming soon" placement="top">
+                        <LoadingButton
+                          variant="contained"
+                          style={{
+                            width: "100%",
+                            backgroundColor: grey[200],
+                            color: "black",
+                          }}
+                          // disabled
+                          loading={
+                            invoice && images.length === 0 && !showRefund
+                          }
+                          // loadingIndicator="Waiting for payment…"
+                          loadingPosition="center"
+                          // onClick={() => generateButtonHandler()}
+                        >
+                          Non Dalle (FREE)
+                        </LoadingButton>
+                      </Tooltip>
                     </StyledBadge>
                   </Grid>
                   <Grid item xs={6} sm={6}>
-                    <LoadingButton
-                      variant="contained"
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#d1b9f0",
-                        color: "black",
-                      }}
-                      loading={invoice && images.length === 0 && !showRefund}
-                      // loadingIndicator="Waiting for payment…"
-                      loadingPosition="center"
-                      onClick={() => setShowBulkPurchase(!showBulkPurchase)}
-                    >
-                      Bulk Purchase
-                    </LoadingButton>
+                    <Tooltip title="Coming soon" placement="top">
+                      <LoadingButton
+                        variant="contained"
+                        // disabled
+                        style={{
+                          width: "100%",
+                          backgroundColor: "#d1b9f0",
+                          color: "black",
+                        }}
+                        loading={invoice && images.length === 0 && !showRefund}
+                        // loadingIndicator="Waiting for payment…"
+                        loadingPosition="center"
+                        onClick={() => setShowBulkPurchase(!showBulkPurchase)}
+                      >
+                        Bulk Purchase
+                      </LoadingButton>
+                    </Tooltip>
                   </Grid>
                 </Grid>
                 <br></br>
