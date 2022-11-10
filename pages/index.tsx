@@ -1,8 +1,11 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
+import PhoneIcon from "@mui/icons-material/Phone";
+import RedditIcon from "@mui/icons-material/Reddit";
 import SendIcon from "@mui/icons-material/Send";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
@@ -11,7 +14,6 @@ import {
   BadgeProps,
   Box,
   Button,
-  Chip,
   Container,
   Divider,
   Grid,
@@ -19,11 +21,13 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  InputAdornment,
   LinearProgress,
   Link,
   Snackbar,
   Stack,
   TextField,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -40,6 +44,7 @@ import { KeyboardEvent, useEffect, useState } from "react";
 import { requestProvider } from "webln";
 import styles from "../styles/Home.module.css";
 import { downloadImage } from "../utils/downloadImage";
+import { getRandomElement } from "../utils/index";
 import { useInterval } from "../utils/useInterval";
 import { CashappIcon, LightningIcon, StrikeIcon } from "./assets/icons/icons";
 import Feedback from "./components/Feedback";
@@ -61,6 +66,30 @@ interface Invoice {
   tokens: number;
 }
 
+export const officialPrompts = [
+  "a macro 35mm photograph of two mice in Hawaii, they're each wearing tiny swimsuits and are carrying tiny surf boards, digital art",
+  "3D render of a cute tropical fish in an aquarium on a dark blue background, digital art",
+  "an astronaut playing basketball with cats in space, digital art",
+  "an astronaut lounging in a tropical resort in space, pixel art",
+  "an oil pastel drawing of an annoyed cat in a spaceship",
+  "a sunlit indoor lounge area with a pool with clear water and another pool with translucent pastel pink water, next to a big window, digital art",
+  '"a sea otter with a pearl earring" by Johannes Vermeer',
+  "photograph of an astronaut riding a horse",
+  "crayon drawing of several cute colorful monsters with ice cream cone bodies on dark blue paper",
+  "a pencil and watercolor drawing of a bright city in the future with flying cars",
+  "a stained glass window depicting a robot",
+  "teddy bears shopping for groceries, one-line drawing",
+  "a painting of a fox in the style of Starry Night",
+  "a bowl of soup that looks like a monster, knitted out of wool",
+  "a fortune-telling shiba inu reading your fate in a giant hamburger, digital art",
+  "an expressive oil painting of a basketball player dunking, depicted as an explosion of a nebula",
+  "a stern-looking owl dressed as a librarian, digital art",
+  "an oil painting by Matisse of a humanoid robot playing chess",
+  "a bowl of soup that is also a portal to another dimension, digital art",
+  "synthwave sports car",
+  "panda mad scientist mixing sparkling chemicals, digital art",
+];
+
 const DEFAULT_ORDER_STATUS = "Order received! Waiting for payment...";
 
 export const SERVER_URL =
@@ -73,6 +102,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     right: -3,
     border: `2px solid ${theme.palette.background.paper}`,
     padding: "0 4px",
+    backgroundColor: "#7B1AF7",
   },
 }));
 
@@ -207,6 +237,16 @@ const Home: NextPage = () => {
     }
   };
 
+  const [promptPressed, setPromptPressed] = useState<boolean>(false);
+  const [promptPlaceholder, setPromptPlaceholder] = useState<string>(
+    "An avocado in the form of an armchair"
+  );
+  const getPrompt = () => {
+    const randomPrompt =
+      officialPrompts[Math.floor(Math.random() * officialPrompts.length)];
+
+    setPrompt(randomPrompt);
+  };
   const reset = () => {
     setInvoice(undefined);
     setImages([]);
@@ -214,6 +254,11 @@ const Home: NextPage = () => {
     setStopGeneratePolling(false);
     setProgress(20);
   };
+
+  useInterval(() => {
+    if (!promptPressed) return;
+    setPromptPlaceholder(getRandomElement(officialPrompts));
+  }, 4000);
 
   const handleKeypress = async (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
@@ -270,9 +315,9 @@ const Home: NextPage = () => {
               />
               <h1 className={styles.title}>Dalle-2 Generator</h1>
             </div>
-            <h6 className={styles.subtitle}>
-              ⚡ A picture is worth a thousand sats ⚡
-            </h6>
+            <p style={{ margin: "auto", fontSize: "20px" }}>
+              With Facial Restoration
+            </p>
 
             {!invoice && (
               <>
@@ -280,15 +325,42 @@ const Home: NextPage = () => {
                   error={!!errorMessage && images.length === 0}
                   helperText={errorMessage}
                   fullWidth
-                  label="Enter prompt"
+                  label="Type something you won't find online"
+                  // label="Use your imagination to create something new"
+                  placeholder={promptPlaceholder}
+                  value={prompt}
+                  multiline
                   id="fullWidth"
+                  InputProps={{
+                    endAdornment: (
+                      //wand icon
+                      <InputAdornment position="end">
+                        <Tooltip title="Generate random prompt" placement="top">
+                          <IconButton
+                            aria-label="generate"
+                            onClick={() => {
+                              setPrompt(getRandomElement(officialPrompts));
+                            }}
+                          >
+                            <AutoFixHighIcon style={{ color: "#000" }} />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  }}
+                  onFocus={() => {
+                    setPromptPressed(true);
+                  }}
+                  onBlur={() => {
+                    setPromptPressed(false);
+                  }}
                   onKeyDown={handleKeypress}
                   onChange={(e) => {
+                    // setPromptPressed(true);
                     setPrompt(e.target.value);
                     setErrorMessage("");
                   }}
                 />
-
                 {serverErrorAlert && (
                   <Alert
                     severity="error"
@@ -308,10 +380,10 @@ const Home: NextPage = () => {
                   className="button-container"
                   // alignItems={"stretch"}
                 >
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={6} sm={6}>
                     <StyledBadge
                       badgeContent={0}
-                      color="success"
+                      // color="success"
                       style={{ width: "100%" }}
                     >
                       <LoadingButton
@@ -327,40 +399,107 @@ const Home: NextPage = () => {
                       </LoadingButton>
                     </StyledBadge>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={6} sm={6}>
                     <StyledBadge
-                      badgeContent={3}
+                      badgeContent={"3/3"}
                       color="success"
                       style={{ width: "100%" }}
                     >
+                      <Tooltip title="Coming soon" placement="top">
+                        <LoadingButton
+                          variant="contained"
+                          style={{
+                            width: "100%",
+                            backgroundColor: grey[200],
+                            color: "black",
+                          }}
+                          // disabled
+                          loading={
+                            invoice && images.length === 0 && !showRefund
+                          }
+                          // loadingIndicator="Waiting for payment…"
+                          loadingPosition="center"
+                          // onClick={() => generateButtonHandler()}
+                        >
+                          Non Dalle (FREE)
+                        </LoadingButton>
+                      </Tooltip>
+                    </StyledBadge>
+                  </Grid>
+                  <Grid item xs={6} sm={6}>
+                    <Tooltip title="Coming soon" placement="top">
                       <LoadingButton
                         variant="contained"
-                        style={{ width: "100%" }}
-                        color="secondary"
+                        // disabled
+                        style={{
+                          width: "100%",
+                          backgroundColor: "#d1b9f0",
+                          color: "black",
+                        }}
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
                         loadingPosition="center"
-                        // onClick={() => generateButtonHandler()}
+                        onClick={() => setShowBulkPurchase(!showBulkPurchase)}
                       >
-                        Non Dalle (FREE)
+                        Bulk Purchase
                       </LoadingButton>
-                    </StyledBadge>
+                    </Tooltip>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <LoadingButton
-                      variant="contained"
-                      style={{
-                        width: "100%",
-                        backgroundColor: grey[200],
-                        color: "black",
+                </Grid>
+                <br></br>
+                <Grid
+                  container
+                  spacing={2}
+                  direction="row"
+                  justifyContent="center"
+                  className="button-container"
+                  // alignItems={"stretch"}
+                >
+                  <Grid item xs={3} sm={3}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      style={{ color: "red", borderColor: "red" }}
+                      onClick={() => {
+                        window.open("https://reddit.com/r/micropay");
                       }}
-                      loading={invoice && images.length === 0 && !showRefund}
-                      // loadingIndicator="Waiting for payment…"
-                      loadingPosition="center"
-                      onClick={() => setShowBulkPurchase(!showBulkPurchase)}
+                      startIcon={<RedditIcon style={{ color: "red" }} />}
                     >
-                      Bulk Purchase
-                    </LoadingButton>
+                      JOIN
+                    </Button>
+                  </Grid>
+                  <Grid item xs={3} sm={3}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      style={{ color: "#2AABEE", borderColor: "#2AABEE" }}
+                      onClick={() => {
+                        window.open("https://t.me/+zGVesHQRbl04NTA5");
+                      }}
+                      startIcon={<TelegramIcon style={{ color: "#2AABEE" }} />}
+                    >
+                      JOIN
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4} sm={3}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      onClick={() => {
+                        window.open("https://calendly.com/micropay/");
+                      }}
+                      style={{
+                        color: "#33cc33",
+                        borderColor: "#33cc33",
+                        whiteSpace: "nowrap",
+                      }}
+                      startIcon={<PhoneIcon style={{ color: "#33cc33" }} />}
+                    >
+                      CALL US
+                    </Button>
                   </Grid>
                 </Grid>
               </>

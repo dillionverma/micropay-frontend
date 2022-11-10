@@ -20,27 +20,27 @@ export default function DrawerAppBar() {
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
         elevation={0}
-        variant="outlined"
+        // variant="outlined"
       >
         <Toolbar>
-          <Link href="/">
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, display: { sm: "block" } }}
-            >
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, display: { sm: "block" } }}
+          >
+            <a href="/">
               <img
-                src="/micropay.png"
+                src="/apple-icon.png"
                 alt="Micropay Logo"
                 style={{
                   display: "flex",
-                  width: "100px",
+                  width: "70px",
                   height: "auto",
                   cursor: "pointer",
                 }}
               />
-            </Typography>
-          </Link>
+            </a>
+          </Typography>
           <Box sx={{ display: { sm: "block" } }}>
             {navItems.map((item) => (
               <Link key={item.name} href={item.link}>
