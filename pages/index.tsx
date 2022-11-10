@@ -313,7 +313,7 @@ const Home: NextPage = () => {
                 src="./micro.png"
                 alt=""
               />
-              <h1 className={styles.title}>Dalle-2 Generator</h1>
+              <h1 className={styles.title}>Dalle-2 Image Generator</h1>
             </div>
             <p style={{ margin: "auto", fontSize: "20px" }}>
               With Facial Restoration
