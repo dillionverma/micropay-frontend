@@ -196,7 +196,7 @@ export default function Footer() {
                 >
                   <Image
                     className={styles.icon}
-                    src="/lightning.svg"
+                    src="/purple-lightning.png"
                     alt="Vercel Logo"
                     width={20}
                     height={20}

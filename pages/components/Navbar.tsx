@@ -20,7 +20,7 @@ export default function DrawerAppBar() {
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
         elevation={0}
-        variant="outlined"
+        // variant="outlined"
       >
         <Toolbar>
           <Link href="/">
@@ -30,11 +30,11 @@ export default function DrawerAppBar() {
               sx={{ flexGrow: 1, display: { sm: "block" } }}
             >
               <img
-                src="/micropay.png"
+                src="/apple-icon.png"
                 alt="Micropay Logo"
                 style={{
                   display: "flex",
-                  width: "100px",
+                  width: "70px",
                   height: "auto",
                   cursor: "pointer",
                 }}
