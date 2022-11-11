@@ -150,7 +150,7 @@ const Home: NextPage = () => {
 
   const getInvoice = async (prompt: string): Promise<Invoice | null> => {
     const response = await axios.post(
-      `${SERVER_URL}/generate`,
+      `${SERVER_URL}/invoice`,
       { prompt },
       { validateStatus: () => true }
     );
