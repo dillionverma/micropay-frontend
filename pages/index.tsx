@@ -131,9 +131,16 @@ const Home: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
+  const [mockImages, setMockImages] = useState<boolean>(false);
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
+    (async () => {
+      let test = await isMockImages();
+      console.log(mockImages);
+      return test;
+    })();
+
     const unsavedChanges = images.length > 0;
     const warningText =
       "You have unsaved changes - are you sure you wish to leave this page?";
@@ -163,6 +170,12 @@ const Home: NextPage = () => {
       setServerErrorAlert(true);
       return null;
     }
+  };
+
+  const isMockImages = async (): Promise<void> => {
+    let resp = await axios.get(`${SERVER_URL}/mock-images`);
+    let data = resp.data;
+    setMockImages(data);
   };
 
   const sendRefundInvoice = async (
@@ -304,24 +317,32 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                style={{ width: "22%", paddingTop: "4px" }}
-                src="./micro.png"
-                alt=""
-              />
-              <h1 className={styles.title}>Dalle-2 Image Generator</h1>
-            </div>
+            <a href="/">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  style={{ width: "17%", paddingTop: "4px" }}
+                  src="./micro.png"
+                  alt=""
+                />
+                <h1 className={styles.title}>Dalle-2 Image Generator</h1>
+              </div>
+            </a>
             <p style={{ margin: "auto", fontSize: "20px" }}>
               With Facial Restoration
             </p>
+
+            {process.env.NODE_ENV === "development" && (
+              <strong style={{ color: "red" }}>
+                Development with Mock Images = {mockImages.toString()}
+              </strong>
+            )}
 
             {!invoice && (
               <>
@@ -358,7 +379,7 @@ const Home: NextPage = () => {
                   onBlur={() => {
                     setPromptPressed(false);
                   }}
-                  onKeyDown={handleKeypress}
+                  // onKeyDown={handleKeypress}
                   onChange={(e) => {
                     // setPromptPressed(true);
                     setPrompt(e.target.value);
@@ -508,7 +529,6 @@ const Home: NextPage = () => {
                 </Grid>
               </>
             )}
-
             {showRefund && !refundInvoiceSent && (
               <>
                 <Alert severity="error">
@@ -558,7 +578,6 @@ const Home: NextPage = () => {
                 Refund invoice sent. We will manually refund you.
               </Alert>
             )}
-
             {invoice && images.length === 0 && !showRefund && (
               <>
                 <Typography
@@ -740,7 +759,6 @@ const Home: NextPage = () => {
                 )} */}
               </>
             )}
-
             {images.length > 0 && (
               <>
                 <Alert severity="success">
@@ -815,7 +833,6 @@ const Home: NextPage = () => {
                 <Feedback invoiceId={invoice?.id} />
               </>
             )}
-
             {/* <FAQ /> */}
             {/* <SubscribeEmail /> */}
           </Stack>
