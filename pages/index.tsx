@@ -136,9 +136,8 @@ const Home: NextPage = () => {
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
     (async () => {
-      let test = await isMockImages();
-      console.log(mockImages);
-      return test;
+      const resp = await axios.get(`${SERVER_URL}/mock-images`);
+      setMockImages(resp.data);
     })();
 
     const unsavedChanges = images.length > 0;
@@ -170,12 +169,6 @@ const Home: NextPage = () => {
       setServerErrorAlert(true);
       return null;
     }
-  };
-
-  const isMockImages = async (): Promise<void> => {
-    let resp = await axios.get(`${SERVER_URL}/mock-images`);
-    let data = resp.data;
-    setMockImages(data);
   };
 
   const sendRefundInvoice = async (
