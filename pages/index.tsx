@@ -781,7 +781,12 @@ const Home: NextPage = () => {
                               sx={{ color: "white" }}
                               onClick={async (e) => {
                                 e.preventDefault();
-                                await downloadImage(item, `image-${i + 1}.png`);
+                                await downloadImage(
+                                  item,
+                                  `image-${Math.random()
+                                    .toString(36)
+                                    .substring(2, 15)}.png`
+                                );
                               }}
                               // aria-label={`star ${item.title}`}
                             >
@@ -804,7 +809,12 @@ const Home: NextPage = () => {
                   onClick={async () => {
                     let i = 1;
                     for (const image of images) {
-                      await downloadImage(image, `image-${i}.png`);
+                      await downloadImage(
+                        image,
+                        `image-${Math.random()
+                          .toString(36)
+                          .substring(2, 15)}.png`
+                      );
                       i++;
                     }
                   }}
