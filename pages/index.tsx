@@ -7,6 +7,8 @@ import RedditIcon from "@mui/icons-material/Reddit";
 import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import {
   Alert,
   AlertTitle,
@@ -52,6 +54,7 @@ import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
+
 const filter = new Filter();
 
 // this one was used quite a bit
@@ -131,6 +134,7 @@ const Home: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
+  const [imgUrl, setImgUrl] = useState<string>("");
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -807,16 +811,21 @@ const Home: NextPage = () => {
                   loading={invoice && images.length === 0}
                   loadingPosition="center"
                   onClick={async () => {
-                    let i = 1;
-                    for (const image of images) {
-                      await downloadImage(
-                        image,
+                    // create an async function that will zip all of the image URLs, and then download the zip file
+                    const zip = new JSZip();
+                    for (let i = 0; i < images.length; i++) {
+                      const response = await fetch(images[i]);
+                      const blob = await response.blob();
+                      zip.file(
                         `image-${Math.random()
                           .toString(36)
-                          .substring(2, 15)}.png`
+                          .substring(2, 15)}.png`,
+                        blob
                       );
-                      i++;
                     }
+                    zip.generateAsync({ type: "blob" }).then((content) => {
+                      saveAs(content, "images.zip");
+                    });
                   }}
                 >
                   Download All
