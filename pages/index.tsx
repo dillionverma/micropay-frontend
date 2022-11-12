@@ -226,10 +226,14 @@ const Home: NextPage = () => {
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const generateButtonHandler = async () => {
+    let flagged = await axios.post(`${SERVER_URL}/check-prompt`, { prompt });
     if (!prompt) {
       setErrorMessage("Please enter a prompt");
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
+    } else if (flagged.data) {
+      const ERROR_MESSAGE = "Prompt is flagged by OpenAI's moderation system: ";
+      setErrorMessage(ERROR_MESSAGE);
     } else {
       const invoice = await getInvoice(prompt);
       setImages([]);
