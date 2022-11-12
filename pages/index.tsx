@@ -331,7 +331,7 @@ const Home: NextPage = () => {
               With Facial Restoration
             </p>
 
-            {process.env.NODE_ENV === "development" && (
+            {process.env.NODE_ENV === "development" && mockImages && (
               <strong style={{ color: "red" }}>
                 Development with Mock Images = {mockImages.toString()}
               </strong>
