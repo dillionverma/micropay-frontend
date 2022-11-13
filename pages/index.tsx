@@ -185,7 +185,7 @@ const Home: NextPage = () => {
   const getStatus = async (): Promise<void> => {
     if (!invoice?.id) return;
     const response = await axios.get(
-      `${SERVER_URL}/generate/${invoice.id}/status`
+      `${SERVER_URL}/generate/${invoice.id}/status/${weblnEnabled}`
     );
     const data = response.data;
     setOrderStatus(data.message);
