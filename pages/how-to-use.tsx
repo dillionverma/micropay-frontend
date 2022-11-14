@@ -3,13 +3,20 @@ import { Container, Grid, Tooltip } from "@mui/material";
 export default function HowTo() {
   return (
     <Container maxWidth="md" style={{ paddingTop: "7vh" }}>
-      <Grid container style={{ textAlign: "center", paddingBottom: "10%" }}>
+      <Grid
+        container
+        style={{
+          textAlign: "center",
+          paddingBottom: "10%",
+          justifyContent: "center",
+        }}
+      >
         <Grid style={{ paddingTop: "8vh" }}>
           <h1>How to Use</h1>
           <div className="how-to-use-intro">
             <p style={{ fontSize: "20px" }}>
-              This tool is a “pay as you go” version of Open AI’s Dalle-2. This
-              means you <strong>don't have</strong> to spend $15 for 115
+              This product is a “pay as you go” version of Open AI’s Dalle-2.
+              This means you <strong>don't have</strong> to spend $15 for 115
               generations at a time, and instead purchase one at a time if you
               would like. Since these micropayments are done on the lightning
               network, this means that you must have Cashapp / Strike or a
@@ -70,13 +77,13 @@ export default function HowTo() {
           <br></br>
           <h2>See Below for more Info</h2>
           <p style={{ fontSize: "20px", marginTop: "-5px" }}>
-            How to Convert
+            How to use your
             <a
               href="https://youtu.be/Cfc3JGb3a4g?t=492"
               style={{ color: "#229ED9" }}
             >
               {" "}
-              Bitcoin into Lightning Sats
+              Bitcoin on the Lightning Network
             </a>
           </p>
           <p style={{ fontSize: "20px", marginTop: "-5px" }}>

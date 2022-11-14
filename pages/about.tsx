@@ -49,21 +49,23 @@ export default function About() {
               >
                 Haseab
               </a>
-              . We started as an alternative to bulk purchasing credits in order
-              to pay for Dalle-2, which is OpenAI's text to image generator.
+              . It started out as a simple solution to a problem we faced once
+              we got access to OpenAI's Dalle-2 in late 2022. In order to use
+              the text to image generator, we needed to pay $15 for 115 credits
+              of use.
             </p>
             <p>
-              And so we devised the same text to image generator product, but it
-              was anonymous, and it would allow the user to never pay more than
-              what they used. Think of a vending machine, but for software.
+              We decided to solve our problem by creating a wrapper around the
+              OpenAI API allowing us to pay-per-use instead of prepaying in
+              bulk. Payments were accepted over the lightning network and the
+              product is completely anonymous allowing anyone to use it without
+              having to sign up. It's like a vending machine, but for software.
             </p>
             <p>
-              The reason why we were able to implement this is because of the
-              Lightning Network, which a technology built on Bitcoin which
-              allows for instant, low-fee microtransactions at scale.
-              Traditional credit card fees can’t handle microtransactions due to
-              their high fees, but with the lightning network, this is
-              effortlessly done.
+              This solution is unique since traditional credit card providers
+              can't handle microtransactions due to their high fees. The
+              Lightning Network however, which is a technology built on Bitcoin,
+              allows for instant and low-fee microtransactions at scale.
             </p>
             {/* <p>
           We envision making an array of tools for small businesses, making it
