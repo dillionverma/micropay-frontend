@@ -7,6 +7,8 @@ import RedditIcon from "@mui/icons-material/Reddit";
 import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import {
   Alert,
   AlertTitle,
@@ -52,6 +54,7 @@ import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
+
 const filter = new Filter();
 
 // this one was used quite a bit
@@ -117,7 +120,7 @@ const Home: NextPage = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(20);
+  const [progress, setProgress] = useState<number>(60);
   const [weblnEnabled, setWebLnEnabled] = useState<boolean>(false);
 
   const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
@@ -185,7 +188,7 @@ const Home: NextPage = () => {
   const getStatus = async (): Promise<void> => {
     if (!invoice?.id) return;
     const response = await axios.get(
-      `${SERVER_URL}/generate/${invoice.id}/status`
+      `${SERVER_URL}/generate/${invoice.id}/status?webln=${weblnEnabled}`
     );
     const data = response.data;
     setOrderStatus(data.message);
@@ -240,9 +243,6 @@ const Home: NextPage = () => {
       setErrorMessage("Please enter a prompt");
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
-    } else if (flagged.data) {
-      const ERROR_MESSAGE = "Prompt is flagged by OpenAI's moderation system: ";
-      setErrorMessage(ERROR_MESSAGE);
     } else {
       const invoice = await getInvoice(prompt);
       setImages([]);
@@ -805,7 +805,12 @@ const Home: NextPage = () => {
                               sx={{ color: "white" }}
                               onClick={async (e) => {
                                 e.preventDefault();
-                                await downloadImage(item, `image-${i + 1}.png`);
+                                await downloadImage(
+                                  item,
+                                  `image-${Math.random()
+                                    .toString(36)
+                                    .substring(2, 15)}.png`
+                                );
                               }}
                               // aria-label={`star ${item.title}`}
                             >
@@ -826,11 +831,20 @@ const Home: NextPage = () => {
                   loading={invoice && images.length === 0}
                   loadingPosition="center"
                   onClick={async () => {
-                    let i = 1;
-                    for (const image of images) {
-                      await downloadImage(image, `image-${i}.png`);
-                      i++;
+                    const zip = new JSZip();
+                    for (let i = 0; i < images.length; i++) {
+                      const response = await fetch(images[i]);
+                      const blob = await response.blob();
+                      zip.file(
+                        `image-${Math.random()
+                          .toString(36)
+                          .substring(2, 15)}.png`,
+                        blob
+                      );
                     }
+                    zip.generateAsync({ type: "blob" }).then((content) => {
+                      saveAs(content, "images.zip");
+                    });
                   }}
                 >
                   Download All
