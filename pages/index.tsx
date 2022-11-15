@@ -229,6 +229,16 @@ const Home: NextPage = () => {
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const generateButtonHandler = async () => {
+    let flagged = { data: false };
+    try {
+      flagged = await axios.post(`${SERVER_URL}/check-prompt`, { prompt });
+    } catch (e) {
+      setErrorMessage(
+        "checking for prompt flagging failed, continuing without..."
+      );
+      //implement a blocking sleep for 2 seconds
+      await new Promise((r) => setTimeout(r, 2000));
+    }
     if (!prompt) {
       setErrorMessage("Please enter a prompt");
     } else if (filter.isProfane(prompt)) {
