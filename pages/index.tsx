@@ -811,7 +811,6 @@ const Home: NextPage = () => {
                   loading={invoice && images.length === 0}
                   loadingPosition="center"
                   onClick={async () => {
-                    // create an async function that will zip all of the image URLs, and then download the zip file
                     const zip = new JSZip();
                     for (let i = 0; i < images.length; i++) {
                       const response = await fetch(images[i]);
