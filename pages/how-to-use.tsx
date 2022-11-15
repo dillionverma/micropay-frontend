@@ -21,51 +21,53 @@ export default function HowTo() {
 
       <h2>Demos Below </h2>
 
-      <Grid className="cashapp-demo" xs={12} md={4}>
-        <img
-          src="438r9893urkcks7339cj38.png"
-          alt="cashapp"
-          className="cashapp"
-          height="100px"
-        />
-        <Tooltip title="Not Available Yet" placement="top">
-          <h2 style={{ marginTop: "-1.5vh" }}>Demo</h2>
-        </Tooltip>
-      </Grid>
+      <Grid container direction="row">
+        <Grid className="cashapp-demo" item xs={12} md={4}>
+          <img
+            src="438r9893urkcks7339cj38.png"
+            alt="cashapp"
+            className="cashapp"
+            height="100px"
+          />
+          <Tooltip title="Not Available Yet" placement="top">
+            <h2 style={{ marginTop: "-1.5vh" }}>Demo</h2>
+          </Tooltip>
+        </Grid>
 
-      <Grid className="strike-demo" xs={12} md={4}>
-        <img
-          src="3488f6cc678b98cb97a9a7a502ce38adab2d9a7ff88c25900f2c79b51ec8df69.png"
-          alt="strike-logo"
-          className="strike-png"
-          height="75"
-          style={{ marginTop: "1vh" }}
-        />
+        <Grid className="strike-demo" item xs={12} md={4}>
+          <img
+            src="3488f6cc678b98cb97a9a7a502ce38adab2d9a7ff88c25900f2c79b51ec8df69.png"
+            alt="strike-logo"
+            className="strike-png"
+            height="75"
+            style={{ marginTop: "1vh" }}
+          />
 
-        <Tooltip title="Not Availabe Yet" placement="top">
-          <h2 style={{ marginTop: "0vh" }}>Demo</h2>
-        </Tooltip>
-      </Grid>
+          <Tooltip title="Not Availabe Yet" placement="top">
+            <h2 style={{ marginTop: "0vh" }}>Demo</h2>
+          </Tooltip>
+        </Grid>
 
-      <Grid className="lightning-wallet-demo" xs={12} md={4}>
-        <img
-          src="8395dcb24914bb7f5ee0e94f08d2ddcb0b3b1339ffad4dd50b7c3d3adc65f635.png"
-          alt="ln-icon"
-          height="30px"
-          className="ln-icon"
-          style={{ marginTop: "3vh" }}
-        />
-        <h2 style={{ display: "inline" }}>LN Wallet</h2>
-        <h2>
-          <a
-            href="https://twitter.com/dillionverma/status/1567508869944938503"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#229ED9" }}
-          >
-            Demo
-          </a>
-        </h2>
+        <Grid className="lightning-wallet-demo" item xs={12} md={4}>
+          <img
+            src="8395dcb24914bb7f5ee0e94f08d2ddcb0b3b1339ffad4dd50b7c3d3adc65f635.png"
+            alt="ln-icon"
+            height="30px"
+            className="ln-icon"
+            style={{ marginTop: "3vh" }}
+          />
+          <h2 style={{ display: "inline" }}>LN Wallet</h2>
+          <h2>
+            <a
+              href="https://twitter.com/dillionverma/status/1567508869944938503"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#229ED9" }}
+            >
+              Demo
+            </a>
+          </h2>
+        </Grid>
       </Grid>
       <Grid md={12}>
         <br></br>
