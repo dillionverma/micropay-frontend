@@ -117,7 +117,7 @@ const Home: NextPage = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
   const [showRefund, setShowRefund] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(20);
+  const [progress, setProgress] = useState<number>(60);
   const [weblnEnabled, setWebLnEnabled] = useState<boolean>(false);
 
   const [serverErrorAlert, setServerErrorAlert] = useState<boolean>(false);
@@ -185,7 +185,7 @@ const Home: NextPage = () => {
   const getStatus = async (): Promise<void> => {
     if (!invoice?.id) return;
     const response = await axios.get(
-      `${SERVER_URL}/generate/${invoice.id}/status`
+      `${SERVER_URL}/generate/${invoice.id}/status?webln=${weblnEnabled}`
     );
     const data = response.data;
     setOrderStatus(data.message);
