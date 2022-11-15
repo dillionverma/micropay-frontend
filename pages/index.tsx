@@ -134,7 +134,6 @@ const Home: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
-  const [imgUrl, setImgUrl] = useState<string>("");
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
