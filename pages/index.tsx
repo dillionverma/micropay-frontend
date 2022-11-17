@@ -9,6 +9,7 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
+  Alert,
   AlertTitle,
   Badge,
   BadgeProps,
@@ -602,7 +603,7 @@ const Home: NextPage = () => {
               <>
                 <Typography
                   style={{
-                    fontSize: "1.5rem",
+                    fontSize: "1.4rem",
                     fontWeight: "bold",
                     margin: "0",
                   }}
@@ -795,10 +796,9 @@ const Home: NextPage = () => {
             )}
             {images.length > 0 && (
               <>
-                <Alert severity="success">
+                <Alert severity="success" sx={{ fontSize: "0.8rem" }}>
                   <AlertTitle>Success</AlertTitle>
-                  Please download your images before moving on! We don&apos;t
-                  store them.
+                  Please download images before clicking off!
                 </Alert>
 
                 <ImageList
@@ -862,7 +862,7 @@ const Home: NextPage = () => {
                         paddingTop: "2vh",
                         paddingBottom: "2vh",
                         borderColor: "#000000",
-                        fontSize: "0.8rem",
+                        fontSize: "0.79rem",
                       }}
                       startIcon={<DownloadIcon />}
                       onClick={async () => {
@@ -900,7 +900,7 @@ const Home: NextPage = () => {
                         borderColor: "#7b1af7",
                         paddingTop: "2vh",
                         paddingBottom: "2vh",
-                        fontSize: "0.8rem",
+                        fontSize: "0.79rem",
                       }}
                       startIcon={<BrushIcon />}
                       onClick={async () => {
@@ -911,7 +911,6 @@ const Home: NextPage = () => {
                     </Button>
                   </Grid>
                 </Grid>
-
                 <Feedback invoiceId={invoice?.id} />
               </>
             )}
