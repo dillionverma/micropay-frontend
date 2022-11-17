@@ -793,7 +793,7 @@ const Home: NextPage = () => {
                 )} */}
               </>
             )}
-            {true && (
+            {images.length > 0 && (
               <>
                 <Alert severity="success" sx={{ fontSize: "0.85rem" }}>
                   <AlertTitle>Success</AlertTitle>
