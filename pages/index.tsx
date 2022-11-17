@@ -1,15 +1,12 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import BrushIcon from "@mui/icons-material/Brush";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import PhoneIcon from "@mui/icons-material/Phone";
 import RedditIcon from "@mui/icons-material/Reddit";
-import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
-import BrushIcon from "@mui/icons-material/Brush";
 import {
   Alert,
   AlertTitle,
@@ -18,7 +15,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Grid,
   IconButton,
   ImageList,
@@ -39,6 +35,8 @@ import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import Filter from "bad-words";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Script from "next/script";
@@ -55,7 +53,6 @@ import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
-import { fontWeight } from "@mui/system";
 
 const filter = new Filter();
 
@@ -353,7 +350,7 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {process.env.NODE_ENV === "development" && mockImages && (
+            {process.env.NODE_ENV === "development" && (
               <strong style={{ color: "red" }}>
                 Development with Mock Images = {mockImages.toString()}
               </strong>
