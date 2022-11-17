@@ -22,12 +22,12 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
-  const [rating, setRating] = useState<number | null>(null);
+  const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
   const [feedbackSent, setFeedbackSent] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [email, setEmail] = useState<string>("");
-  const [error, setError] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   const sendFeedback = async (
     rating: number,
@@ -49,7 +49,6 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
 
   return (
     <>
-      <br></br>
       {feedbackSent && (
         <>
           <Alert severity="success">
@@ -150,20 +149,35 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
             }}
             align="center"
           >
-            <Typography component="legend" alignItems="center">
-              {rating} stars
+            <Typography
+              component="legend"
+              alignItems="center"
+              sx={{ fontSize: "0.95rem" }}
+            >
+              How likely are you to recommend to friend?
             </Typography>
-            <Rating
-              name="customized-10"
-              defaultValue={2}
-              max={10}
-              onChange={async (event, newValue) => {
-                if (newValue) {
-                  setRating(newValue);
-                  await sendFeedback(newValue, feedback, email);
-                }
-              }}
-            />
+            <Grid container justifyContent="center">
+              <Grid item>
+                <Rating
+                  name="customized-10"
+                  size="medium"
+                  defaultValue={rating}
+                  max={10}
+                  sx={{ fontSize: "1.4rem" }}
+                  onChange={async (event, newValue) => {
+                    if (newValue) {
+                      setRating(newValue);
+                      await sendFeedback(newValue, feedback, email);
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid item>
+                <Typography style={{ fontSize: "0.95rem" }}>
+                  {rating} /10
+                </Typography>
+              </Grid>
+            </Grid>
           </Box>
 
           <FormControl>
@@ -179,15 +193,15 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
                 required={true}
                 type="text"
                 style={{ flex: 1 }}
-                // error={error}
+                error={error}
                 fullWidth
+                InputLabelProps={{ style: { fontSize: "0.9rem" } }} // font size of input text
                 id="feedback"
                 label="We want the truth! Tell us your experience"
                 onChange={(e) => {
                   setFeedback(e.target.value);
                   if (!!feedback && !!email) {
                     setDisabled(false);
-                    setError(false);
                   }
                 }}
               />
@@ -203,7 +217,7 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
               <TextField
                 required={true}
                 type="text"
-                // error={error}
+                error={error}
                 style={{ flex: 1 }}
                 fullWidth
                 id="feedback"
@@ -218,7 +232,6 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
                   setEmail(e.target.value);
                   if (!!feedback && !!email) {
                     setDisabled(false);
-                    setError(false);
                   }
                 }}
               />
@@ -228,8 +241,10 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
                 disabled={disabled}
                 variant="outlined"
                 onClick={async () => {
-                  if (feedback) {
+                  if (feedback && email) {
                     handleFeedback();
+                  } else {
+                    setError(true);
                   }
                 }}
                 startIcon={<SendIcon />}

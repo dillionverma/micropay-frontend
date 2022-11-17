@@ -660,7 +660,7 @@ const Home: NextPage = () => {
                       OR
                     </Typography>
                     <Grid container>
-                      <Grid item xs={6} sm={12} md={12}>
+                      <Grid item xs={12} sm={12} md={12}>
                         <Button
                           variant="outlined"
                           style={{
@@ -677,7 +677,7 @@ const Home: NextPage = () => {
                           Open Cash App
                         </Button>
                       </Grid>
-                      <Grid item xs={6} sm={12} md={12}>
+                      <Grid item xs={12} sm={12} md={12}>
                         <Button
                           variant="outlined"
                           style={{
@@ -859,6 +859,7 @@ const Home: NextPage = () => {
                         paddingTop: "2vh",
                         paddingBottom: "2vh",
                         borderColor: "#000000",
+                        fontSize: "0.8rem",
                       }}
                       startIcon={<DownloadIcon />}
                       onClick={async () => {
@@ -894,6 +895,7 @@ const Home: NextPage = () => {
                         borderColor: "#7b1af7",
                         paddingTop: "2vh",
                         paddingBottom: "2vh",
+                        fontSize: "0.8rem",
                       }}
                       startIcon={<BrushIcon />}
                       onClick={async () => {
