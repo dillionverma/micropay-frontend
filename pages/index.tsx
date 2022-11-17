@@ -793,9 +793,9 @@ const Home: NextPage = () => {
                 )} */}
               </>
             )}
-            {images.length > 0 && (
+            {true && (
               <>
-                <Alert severity="success" sx={{ fontSize: "0.8rem" }}>
+                <Alert severity="success" sx={{ fontSize: "0.85rem" }}>
                   <AlertTitle>Success</AlertTitle>
                   Please download images before clicking off!
                 </Alert>

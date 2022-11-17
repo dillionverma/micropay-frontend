@@ -147,10 +147,9 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
           >
             <Typography
               component="legend"
-              alignItems="center"
-              sx={{ fontSize: "0.95rem" }}
+              sx={{ fontSize: "0.95rem", textAlign: "center" }}
             >
-              How likely are you to recommend micropay to a friend?
+              How likely are you to recommend to a friend?
             </Typography>
             <Grid container justifyContent="center">
               <Grid item>
