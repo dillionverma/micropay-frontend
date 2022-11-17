@@ -9,6 +9,7 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import BrushIcon from "@mui/icons-material/Brush";
 import {
   Alert,
   AlertTitle,
@@ -54,6 +55,7 @@ import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
+import { fontWeight } from "@mui/system";
 
 const filter = new Filter();
 
@@ -114,6 +116,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 }));
 
 const Home: NextPage = () => {
+  const [showTitle, setShowTitle] = useState<boolean>(true);
   const [invoice, setInvoice] = useState<Invoice>();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [refundErrorMessage, setRefundErrorMessage] = useState<string>("");
@@ -245,6 +248,8 @@ const Home: NextPage = () => {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
       const invoice = await getInvoice(prompt);
+
+      setShowTitle(false);
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
@@ -323,26 +328,30 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Container maxWidth="sm">
           <Stack direction="column" spacing={2} alignItems="center">
-            <a href="/">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  style={{ width: "17%", paddingTop: "4px" }}
-                  src="./micro.png"
-                  alt=""
-                />
-                <h1 className={styles.title}>Dalle-2 Image Generator</h1>
-              </div>
-            </a>
-            <p style={{ margin: "auto", fontSize: "20px" }}>
-              With Facial Restoration
-            </p>
+            {showTitle && (
+              <>
+                <a href="/">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      style={{ width: "17%", paddingTop: "4px" }}
+                      src="./micro.png"
+                      alt=""
+                    />
+                    <h1 className={styles.title}>Dalle-2 Image Generator</h1>
+                  </div>
+                </a>
+                <p style={{ margin: "auto", fontSize: "20px" }}>
+                  With Facial Restoration
+                </p>
+              </>
+            )}
 
             {process.env.NODE_ENV === "development" && mockImages && (
               <strong style={{ color: "red" }}>
@@ -535,7 +544,10 @@ const Home: NextPage = () => {
                 </Grid>
               </>
             )}
-            {showRefund && !refundInvoiceSent && (
+
+            {
+              //Refund page not being used anymore
+              /* {showRefund && !refundInvoiceSent && (
               <>
                 <Alert severity="error">
                   <AlertTitle>Uh-oh</AlertTitle>
@@ -578,27 +590,34 @@ const Home: NextPage = () => {
                   </Button>
                 </div>
               </>
-            )}
-            {showRefund && refundInvoiceSent && (
+            )} */
+            }
+
+            {/* {showRefund && refundInvoiceSent && (
               <Alert severity="success">
                 Refund invoice sent. We will manually refund you.
               </Alert>
-            )}
+            )} */}
             {invoice && images.length === 0 && !showRefund && (
               <>
                 <Typography
-                  variant="subtitle1"
-                  align="center"
                   style={{
+                    fontSize: "1.5rem",
                     fontWeight: "bold",
-                    paddingLeft: "12%",
-                    paddingRight: "12%",
+                    margin: "0",
                   }}
                 >
-                  Please scan the QR Code below to generate images (cost: 1000
-                  satoshis or ~$0.20)
+                  Please scan the QR Code below
                 </Typography>
-
+                <Typography
+                  style={{
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                    margin: "0",
+                  }}
+                >
+                  Cost: 1000 satoshis
+                </Typography>
                 <Grid
                   container
                   spacing={2}
@@ -627,7 +646,8 @@ const Home: NextPage = () => {
                       }}
                       value={invoice?.request || ""}
                     />
-                    <div style={{ paddingBottom: "6%" }}></div>
+                  </Grid>
+                  <Grid item xs={12} sm={6} textAlign="center">
                     <Button
                       style={{ margin: "10px auto", width: "70%" }}
                       variant="outlined"
@@ -639,60 +659,67 @@ const Home: NextPage = () => {
                     >
                       Copy invoice
                     </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={6} textAlign="center">
-                    <Typography variant="h5" gutterBottom>
-                      Recommended
+                    <Typography variant="h6" gutterBottom>
+                      OR
                     </Typography>
-                    <Button
-                      variant="outlined"
-                      style={{
-                        color: "#00D632",
-                        borderColor: "#00D632",
-                        width: "100%",
-                        margin: "8px 0",
-                      }}
-                      onClick={() => {
-                        window.open("https://cash.app/$");
-                      }}
-                      startIcon={<CashappIcon />}
-                    >
-                      Open Cash App
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      style={{
-                        color: "#000",
-                        borderColor: "#000",
-                        width: "100%",
-                        margin: "8px 0",
-                      }}
-                      startIcon={<StrikeIcon />}
-                      onClick={() => {
-                        window.open("https://strike.me/");
-                      }}
-                    >
-                      Open Strike.me
-                    </Button>
-                    <Divider style={{ margin: "16px 0" }} />
-                    <Typography variant="h5" gutterBottom>
-                      Advanced
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      style={{
-                        color: "#f7931a",
-                        borderColor: "#f7931a",
-                        width: "100%",
-                        margin: "8px 0",
-                      }}
-                      startIcon={<LightningIcon />}
-                      onClick={() => {
-                        window.open(`lightning:${invoice?.request}`);
-                      }}
-                    >
-                      Open Lightning App
-                    </Button>
+                    <Grid container>
+                      <Grid item xs={6} sm={12} md={12}>
+                        <Button
+                          variant="outlined"
+                          style={{
+                            color: "#00D632",
+                            borderColor: "#00D632",
+                            width: "100%",
+                            margin: "0px 0",
+                          }}
+                          onClick={() => {
+                            window.open("https://cash.app/$");
+                          }}
+                          startIcon={<CashappIcon />}
+                        >
+                          Open Cash App
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6} sm={12} md={12}>
+                        <Button
+                          variant="outlined"
+                          style={{
+                            color: "#000",
+                            borderColor: "#000",
+                            width: "100%",
+                            margin: "0px 0",
+                          }}
+                          startIcon={<StrikeIcon />}
+                          onClick={() => {
+                            window.open("https://strike.me/");
+                          }}
+                        >
+                          Open Strike.me
+                        </Button>
+                      </Grid>
+
+                      <Grid item xs={12} md={12}>
+                        {/* <Divider style={{ margin: "16px 0" }} />
+                        <Typography variant="h5" gutterBottom>
+                          Advanced
+                        </Typography> */}
+                        <Button
+                          variant="outlined"
+                          style={{
+                            color: "#f7931a",
+                            borderColor: "#f7931a",
+                            width: "100%",
+                            margin: "0px 0",
+                          }}
+                          startIcon={<LightningIcon />}
+                          onClick={() => {
+                            window.open(`lightning:${invoice?.request}`);
+                          }}
+                        >
+                          Open Lightning App
+                        </Button>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
 
@@ -705,6 +732,7 @@ const Home: NextPage = () => {
                     variant="determinate"
                     value={progress}
                   />
+
                   <Typography variant="subtitle1" align="center">
                     Experiencing problems? Message us on{" "}
                     <a
@@ -769,14 +797,14 @@ const Home: NextPage = () => {
               <>
                 <Alert severity="success">
                   <AlertTitle>Success</AlertTitle>
-                  Make sure you download your images before leaving this page
-                  since we don&apos;t store them!
+                  Please download your images before moving on! We don't store
+                  them.
                 </Alert>
 
                 <ImageList
                   sx={{ width: "100%" }}
-                  cols={largeScreen ? 2 : 2}
-                  rowHeight={300}
+                  cols={largeScreen ? 4 : 4}
+                  rowHeight={150}
                 >
                   {images.map((item, i) => (
                     <Link
@@ -823,32 +851,62 @@ const Home: NextPage = () => {
                     </Link>
                   ))}
                 </ImageList>
-
-                <LoadingButton
-                  variant="contained"
-                  style={{ width: "100%" }}
-                  color="primary"
-                  loading={invoice && images.length === 0}
-                  loadingPosition="center"
-                  onClick={async () => {
-                    const zip = new JSZip();
-                    for (let i = 0; i < images.length; i++) {
-                      const response = await fetch(images[i]);
-                      const blob = await response.blob();
-                      zip.file(
-                        `image-${Math.random()
-                          .toString(36)
-                          .substring(2, 15)}.png`,
-                        blob
-                      );
-                    }
-                    zip.generateAsync({ type: "blob" }).then((content) => {
-                      saveAs(content, "images.zip");
-                    });
-                  }}
-                >
-                  Download All
-                </LoadingButton>
+                <Grid container direction="row">
+                  <Grid item xs={6} md={6}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      style={{
+                        color: "#000000",
+                        paddingTop: "2vh",
+                        paddingBottom: "2vh",
+                        borderColor: "#000000",
+                      }}
+                      startIcon={<DownloadIcon />}
+                      onClick={async () => {
+                        const zip = new JSZip();
+                        for (let i = 0; i < images.length; i++) {
+                          const response = await fetch(images[i]);
+                          const blob = await response.blob();
+                          zip.file(
+                            `image-${Math.random()
+                              .toString(36)
+                              .substring(2, 15)}.png`,
+                            blob
+                          );
+                        }
+                        zip.generateAsync({ type: "blob" }).then((content) => {
+                          saveAs(
+                            content,
+                            `images - ${prompt.substring(0, 20)}.zip`
+                          );
+                        });
+                      }}
+                    >
+                      Download All
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6} md={6}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      style={{
+                        color: "#7b1af7",
+                        borderColor: "#7b1af7",
+                        paddingTop: "2vh",
+                        paddingBottom: "2vh",
+                      }}
+                      startIcon={<BrushIcon />}
+                      onClick={async () => {
+                        window.open("/");
+                      }}
+                    >
+                      CREATE MORE
+                    </Button>
+                  </Grid>
+                </Grid>
 
                 <Feedback invoiceId={invoice?.id} />
               </>
