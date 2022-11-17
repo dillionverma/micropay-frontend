@@ -1,6 +1,6 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
-import BrushIcon from "@mui/icons-material/Brush";
+import BrushIcon from "@mui/icons-material/BrushOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -273,11 +273,14 @@ const Home: NextPage = () => {
     setPrompt(randomPrompt);
   };
   const reset = () => {
-    setInvoice(undefined);
     setImages([]);
+    setInvoice(undefined);
     setOrderStatus(DEFAULT_ORDER_STATUS);
     setStopGeneratePolling(false);
     setProgress(20);
+    setPrompt("");
+    setShowTitle(true);
+    setImages([]);
   };
 
   useInterval(() => {
@@ -794,8 +797,8 @@ const Home: NextPage = () => {
               <>
                 <Alert severity="success">
                   <AlertTitle>Success</AlertTitle>
-                  Please download your images before moving on! We don't store
-                  them.
+                  Please download your images before moving on! We don&apos;t
+                  store them.
                 </Alert>
 
                 <ImageList
@@ -877,7 +880,9 @@ const Home: NextPage = () => {
                         zip.generateAsync({ type: "blob" }).then((content) => {
                           saveAs(
                             content,
-                            `images - ${prompt.substring(0, 20)}.zip`
+                            `images - ${prompt
+                              .substring(0, 30)
+                              .toLowerCase()}.zip`
                           );
                         });
                       }}
@@ -899,7 +904,7 @@ const Home: NextPage = () => {
                       }}
                       startIcon={<BrushIcon />}
                       onClick={async () => {
-                        window.open("/");
+                        reset();
                       }}
                     >
                       CREATE MORE

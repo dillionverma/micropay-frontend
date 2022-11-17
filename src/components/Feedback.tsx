@@ -11,15 +11,12 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
-import StyledRating, { customIcons, IconContainer } from "./StyledRating";
 
-import SendIcon from "@mui/icons-material/Send";
-import { SERVER_URL } from "../../pages";
 import PhoneIcon from "@mui/icons-material/Phone";
 import RedditIcon from "@mui/icons-material/Reddit";
+import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { SERVER_URL } from "../../pages";
 
 const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
   const [rating, setRating] = useState<number>(0);
@@ -147,21 +144,20 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
             sx={{
               "& > legend": { mt: 2 },
             }}
-            align="center"
           >
             <Typography
               component="legend"
               alignItems="center"
               sx={{ fontSize: "0.95rem" }}
             >
-              How likely are you to recommend to friend?
+              How likely are you to recommend micropay to a friend?
             </Typography>
             <Grid container justifyContent="center">
               <Grid item>
                 <Rating
                   name="customized-10"
                   size="medium"
-                  defaultValue={rating}
+                  value={rating}
                   max={10}
                   sx={{ fontSize: "1.4rem" }}
                   onChange={async (event, newValue) => {
