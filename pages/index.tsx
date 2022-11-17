@@ -221,7 +221,7 @@ const Home: NextPage = () => {
     setRefundInvoiceSent(true);
   };
 
-  const getStatus = async (): Promise<void> => {
+  const getStatusDalle = async (): Promise<void> => {
     if (!invoice?.id) return;
     const response = await axios.get(
       `${SERVER_URL}/generate/${invoice.id}/status?webln=${weblnEnabled}`
@@ -241,10 +241,46 @@ const Home: NextPage = () => {
     }
   };
 
+  const [stableDiffusionId, setStableDiffusionId] = useState<string>("");
+
+  const getStatusStableDiffusion = async (): Promise<void> => {
+    const response = await axios.get(
+      `${SERVER_URL}/generate/stable-diffusion/${stableDiffusionId}/status`
+    );
+    const data = response.data;
+    setImages(data.images);
+    if (data.images.length !== 0) {
+      setStopGeneratePolling(true);
+    }
+  };
+
+  const generateStableDiffusion = async () => {
+    setImages([]);
+    // setOrderStatus("Generating Stable Diffusion Images...");
+    setStopGeneratePolling(false);
+    if (!prompt) {
+      setErrorMessage("Please enter a prompt");
+    } else if (filter.isProfane(prompt)) {
+      setErrorMessage("Please enter a non-profane prompt");
+    } else {
+      const response = await axios.post(
+        `${SERVER_URL}/generate/stable-diffusion`,
+        {
+          prompt,
+        }
+      );
+      const data = response.data;
+      setStableDiffusionId(data.id);
+    }
+  };
+
   useInterval(
     async () => {
       if (invoice && images.length === 0) {
-        await getStatus();
+        await getStatusDalle();
+      }
+      if (stableDiffusionId && images.length === 0) {
+        await getStatusStableDiffusion();
       }
     },
     stopGeneratePolling ? null : 1000 // when set to null, we stop polling
@@ -426,7 +462,7 @@ const Home: NextPage = () => {
               </strong>
             )}
 
-            {!invoice && (
+            {!invoice && !stableDiffusionId && (
               <>
                 <TextField
                   error={!!errorMessage && images.length === 0}
@@ -526,7 +562,7 @@ const Home: NextPage = () => {
                           }
                           // loadingIndicator="Waiting for payment…"
                           loadingPosition="center"
-                          // onClick={() => generateButtonHandler()}
+                          onClick={() => generateStableDiffusion()}
                         >
                           Non Dalle (FREE)
                         </LoadingButton>
@@ -902,6 +938,80 @@ const Home: NextPage = () => {
                     color="success"
                   />
                 )} */}
+              </>
+            )}
+
+            {stableDiffusionId && images.length === 0 && (
+              <>
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "12%",
+                    paddingRight: "12%",
+                  }}
+                >
+                  Your free generation is being processed with Stable Diffusion
+                </Typography>
+
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="subtitle1" align="center">
+                    Status: {orderStatus}
+                  </Typography>
+                  <LinearProgress
+                    style={{ margin: "10px 0" }}
+                    variant="determinate"
+                    value={progress}
+                  />
+                  <Typography variant="subtitle1" align="center">
+                    Experiencing problems? Message us on{" "}
+                    <a
+                      href="https://t.me/+zGVesHQRbl04NTA5"
+                      style={{ color: "#0070f3" }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Telegram
+                    </a>
+                    .
+                  </Typography>
+                </Box>
+
+                <div style={{ paddingTop: "2%" }}></div>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{
+                    // color: "#f7931a",
+                    // borderColor: "#f7931a",
+                    // width: "100%",
+                    margin: "8px 0",
+                  }}
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Go Back
+                </Button>
+
+                <Snackbar
+                  open={open}
+                  autoHideDuration={3000}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    Copied!
+                  </Alert>
+                </Snackbar>
               </>
             )}
             {images.length > 0 && (
