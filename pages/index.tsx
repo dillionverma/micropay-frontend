@@ -8,6 +8,8 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RedditIcon from "@mui/icons-material/Reddit";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import {
   Alert,
   AlertTitle,
@@ -48,6 +50,7 @@ import { requestProvider } from "webln";
 import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
+import { Mixpanel } from "../src/mixpanel";
 import StrikeMeModal from "../src/components/StrikeMeModal";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
@@ -321,6 +324,7 @@ const Home: NextPage = () => {
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const generateButtonHandler = async () => {
+    Mixpanel.track("Generate Button Clicked", { hello: "world" });
     // let flagged = { data: false };
     // try {
     //   flagged = await axios.post(`${SERVER_URL}/check-prompt`, { prompt });
