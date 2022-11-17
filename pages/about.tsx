@@ -50,20 +50,21 @@ export default function About() {
                 Haseab
               </a>
               . It started out as a simple solution to a problem we faced once
-              we got access to OpenAI's Dalle-2 in late 2022. In order to use
-              the text to image generator, we needed to pay $15 for 115 credits
-              of use.
+              we got access to OpenAI&apos;s Dalle-2 in late 2022. In order to
+              use the text to image generator, we needed to pay $15 for 115
+              credits of use.
             </p>
             <p>
               We decided to solve our problem by creating a wrapper around the
               OpenAI API allowing us to pay-per-use instead of prepaying in
               bulk. Payments were accepted over the lightning network and the
               product is completely anonymous allowing anyone to use it without
-              having to sign up. It's like a vending machine, but for software.
+              having to sign up. It&apos;s like a vending machine, but for
+              software.
             </p>
             <p>
               This solution is unique since traditional credit card providers
-              can't handle microtransactions due to their high fees. The
+              can&apos;t handle microtransactions due to their high fees. The
               Lightning Network however, which is a technology built on Bitcoin,
               allows for instant and low-fee microtransactions at scale.
             </p>

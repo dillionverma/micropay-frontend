@@ -9,12 +9,12 @@ export default function HowTo() {
       <h1>How to Use</h1>
       <div className="how-to-use-intro">
         <p style={{ fontSize: "20px" }}>
-          This product is a “pay as you go” version of Open AI’s Dalle-2. This
-          means you <strong>don't have</strong> to spend $15 for 115 generations
-          at a time, and instead purchase one at a time if you would like. Since
-          these micropayments are done on the lightning network, this means that
-          you must have Cashapp / Strike or a lightning wallet to pay the
-          lightning invoices that are served
+          This product is a “pay as you go” version of Open AI&apos;s Dalle-2.
+          This means you <strong>don&apos;t have</strong> to spend $15 for 115
+          generations at a time, and instead purchase one at a time if you would
+          like. Since these micropayments are done on the lightning network,
+          this means that you must have Cashapp / Strike or a lightning wallet
+          to pay the lightning invoices that are served
         </p>
         <br></br>
       </div>
