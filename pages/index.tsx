@@ -1031,8 +1031,8 @@ const Home: NextPage = () => {
 
                 <ImageList
                   sx={{ width: "100%" }}
-                  cols={largeScreen ? 4 : 4}
-                  rowHeight={150}
+                  cols={images.length}
+                  rowHeight={300}
                 >
                   {images.map((item, i) => (
                     <Link
