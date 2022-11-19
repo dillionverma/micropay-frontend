@@ -25,7 +25,6 @@ import {
   InputAdornment,
   LinearProgress,
   Link,
-  Modal,
   Snackbar,
   Stack,
   TextField,
@@ -46,11 +45,7 @@ import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { requestProvider } from "webln";
-import {
-  CashappIcon,
-  LightningIcon,
-  StrikeIcon,
-} from "../src/assets/icons/icons";
+import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
 import StrikeMeModal from "../src/components/StrikeMeModal";
@@ -612,7 +607,7 @@ const Home: NextPage = () => {
                     margin: "0",
                   }}
                 >
-                  We use Bitcoin ⚡️ Lightning.
+                  We accept Bitcoin on Lightning Network ⚡️.
                 </Typography>
                 <Typography
                   style={{

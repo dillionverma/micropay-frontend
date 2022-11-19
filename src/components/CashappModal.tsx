@@ -1,16 +1,9 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { Container } from "@mui/material";
-import {
-  CashappIcon,
-  LightningIcon,
-  StrikeIcon,
-} from "../../src/assets/icons/icons";
-import { maxHeight } from "@mui/system";
+import { CashappIcon } from "../../src/assets/icons/icons";
 
 export default function CashappModal() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
