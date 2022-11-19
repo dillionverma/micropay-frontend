@@ -3,12 +3,48 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import { Grid, Typography } from "@mui/material";
+import { Alert, Grid, Snackbar, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import styles from "../../styles/Home.module.css";
 
 export default function Footer() {
+  const [open, setOpen] = useState(false);
+
+  const nodeAddress =
+    "031f4cf2aee504680226af773429181549bf91b87db334c7334e4ae0f26d354407@5drnrrfwo6spex3b5dzmw4n4pprp5su7bvmy526nbeehwqyv5yyx36id.onion:9735";
+
+  const handleNodeClick = () => {
+    setOpen(true);
+    navigator.clipboard.writeText(nodeAddress);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const truncate = (str: string, n: number, separator: string = " ... ") => {
+    if (str.length <= n) return str;
+
+    separator = separator || "...";
+
+    var sepLen = separator.length,
+      charsToShow = n - sepLen,
+      frontChars = Math.ceil(charsToShow / 2),
+      backChars = Math.floor(charsToShow / 2);
+
+    return (
+      str.substr(0, frontChars) + separator + str.substr(str.length - backChars)
+    );
+  };
+
   return (
     <>
       <footer className={styles.footer}>
@@ -150,6 +186,54 @@ export default function Footer() {
                 />
               </div>
             </a> */}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            flexDirection="row"
+            display={"flex"}
+            alignItems="center"
+            justifyContent="center"
+            // variant="outline"
+            style={{ borderTop: "1px solid rgba(0, 0, 0, 0.12)" }}
+          >
+            <Typography
+              variant="subtitle1"
+              align="center"
+              style={{ cursor: "pointer", padding: "0 4px" }}
+              onClick={() => {
+                handleNodeClick();
+              }}
+            >
+              Connect with us:
+            </Typography>
+            <p
+              style={{ cursor: "pointer", margin: 0, fontWeight: "bold" }}
+              onClick={() => {
+                handleNodeClick();
+              }}
+            >
+              {truncate(nodeAddress, 30)}
+            </p>
+
+            <Snackbar
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                variant="filled"
+                sx={{ width: "100%" }}
+              >
+                Copied!
+              </Alert>
+            </Snackbar>
+
+            {/* MUI textfield */}
           </Grid>
           <Grid
             item
