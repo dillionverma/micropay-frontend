@@ -7,6 +7,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import RedditIcon from "@mui/icons-material/Reddit";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import {
   Alert,
   AlertTitle,
@@ -15,6 +16,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Grid,
   IconButton,
   ImageList,
@@ -347,9 +349,9 @@ const Home: NextPage = () => {
                     <h1 className={styles.title}>Dalle-2 Image Generator</h1>
                   </div>
                 </a>
-                <p style={{ margin: "auto", fontSize: "20px" }}>
+                {/* <p style={{ margin: "auto", fontSize: "20px" }}>
                   With Facial Restoration
-                </p>
+                </p> */}
               </>
             )}
 
@@ -607,7 +609,7 @@ const Home: NextPage = () => {
                     margin: "0",
                   }}
                 >
-                  Please scan the QR Code below
+                  We use Bitcoin ⚡️ Lightning.
                 </Typography>
                 <Typography
                   style={{
@@ -622,15 +624,42 @@ const Home: NextPage = () => {
                   container
                   spacing={2}
                   direction="row"
+                  align="center"
                   justifyContent="center"
                   className="button-container"
                   // alignItems={"stretch"}
                 >
+                  <Box sx={{ width: "100%" }}>
+                    <Divider style={{ margin: "16px 0" }} />
+                    <Typography variant="subtitle1" align="center">
+                      <strong>Status:</strong> {orderStatus}
+                    </Typography>
+                    <LinearProgress
+                      style={{ margin: "10px 0" }}
+                      variant="determinate"
+                      value={progress}
+                    />
+
+                    <Typography variant="subtitle1" align="center">
+                      Experiencing problems? Message us on{" "}
+                      <a
+                        href="https://t.me/+zGVesHQRbl04NTA5"
+                        style={{ color: "#0070f3" }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Telegram
+                      </a>
+                      .
+                    </Typography>
+                    <Divider style={{ margin: "16px 0" }} />
+                  </Box>
+
                   <Grid
+                    id="qr-code"
                     item
-                    xs={12}
+                    xs={6}
                     sm={6}
-                    justifyContent="center"
                     display={"flex"}
                     flexDirection="column"
                   >
@@ -646,10 +675,37 @@ const Home: NextPage = () => {
                       }}
                       value={invoice?.request || ""}
                     />
+                    <span>Scan QR Code, or</span>
                   </Grid>
-                  <Grid item xs={12} sm={6} textAlign="center">
+                  <Grid item xs={12} sm={6} alignItems="center">
+                    <Typography variant="h6" gutterBottom>
+                      STEP 0
+                    </Typography>
                     <Button
-                      style={{ margin: "10px auto", width: "70%" }}
+                      style={{ margin: "10px auto", width: "100%" }}
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() => {
+                        window.open("/how-to-use", "_blank");
+                      }}
+                      startIcon={<QuestionMarkIcon />}
+                    >
+                      Show me how this works
+                    </Button>
+                    <Typography variant="h6" gutterBottom>
+                      STEP 1
+                    </Typography>
+                    <TextField
+                      id="outlined-read-only-input"
+                      fullWidth
+                      label=""
+                      defaultValue={invoice.request}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                    <Button
+                      style={{ margin: "10px auto", width: "100%" }}
                       variant="outlined"
                       onClick={() => {
                         setOpen(true);
@@ -659,8 +715,10 @@ const Home: NextPage = () => {
                     >
                       Copy invoice
                     </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} textAlign="center">
                     <Typography variant="h6" gutterBottom>
-                      OR
+                      STEP 2
                     </Typography>
                     <Grid container>
                       <Grid item xs={12} sm={12} md={12}>
@@ -699,10 +757,7 @@ const Home: NextPage = () => {
                       </Grid>
 
                       <Grid item xs={12} md={12}>
-                        {/* <Divider style={{ margin: "16px 0" }} />
-                        <Typography variant="h5" gutterBottom>
-                          Advanced
-                        </Typography> */}
+                        {/* <Divider style={{ margin: "16px 0" }} /> */}
                         <Button
                           variant="outlined"
                           style={{
@@ -722,30 +777,6 @@ const Home: NextPage = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="subtitle1" align="center">
-                    Status: {orderStatus}
-                  </Typography>
-                  <LinearProgress
-                    style={{ margin: "10px 0" }}
-                    variant="determinate"
-                    value={progress}
-                  />
-
-                  <Typography variant="subtitle1" align="center">
-                    Experiencing problems? Message us on{" "}
-                    <a
-                      href="https://t.me/+zGVesHQRbl04NTA5"
-                      style={{ color: "#0070f3" }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Telegram
-                    </a>
-                    .
-                  </Typography>
-                </Box>
 
                 <div style={{ paddingTop: "2%" }}></div>
 
@@ -795,10 +826,19 @@ const Home: NextPage = () => {
             )}
             {images.length > 0 && (
               <>
-                <Alert severity="success" sx={{ fontSize: "0.85rem" }}>
-                  <AlertTitle>Success</AlertTitle>
-                  Please download images before clicking off!
-                </Alert>
+                <Container style={{ padding: "0px" }}>
+                  <Alert
+                    severity="success"
+                    width="100%"
+                    sx={{ fontSize: "0.85rem" }}
+                  >
+                    <AlertTitle>Success</AlertTitle>
+                    Please download images before clicking off!
+                  </Alert>
+                </Container>
+                <Typography>
+                  <strong>Prompt: </strong> {prompt}
+                </Typography>
 
                 <ImageList
                   sx={{ width: "100%" }}
