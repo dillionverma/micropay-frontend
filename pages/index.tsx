@@ -144,7 +144,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     right: -3,
     border: `2px solid ${theme.palette.background.paper}`,
     padding: "0 4px",
-    backgroundColor: "#7B1AF7",
+    // backgroundColor: "#7B1AF7",
   },
 }));
 
@@ -171,6 +171,15 @@ const Home: NextPage = () => {
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
   const [mockImages, setMockImages] = useState<boolean>(false);
+
+  const getCookie = (name: string, cookie: string): string => {
+    // Get name followed by anything except a semicolon
+    var cookiestring = RegExp(name + "=[^;]+").exec(cookie);
+    // Return everything after the equal sign, or an empty string if the cookie name not found
+    return decodeURIComponent(
+      !!cookiestring ? cookiestring.toString().replace(/^[^=]+./, "") : ""
+    );
+  };
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -247,12 +256,26 @@ const Home: NextPage = () => {
     const response = await axios.get(
       `${SERVER_URL}/generate/stable-diffusion/${stableDiffusionId}/status`
     );
+
     const data = response.data;
     setImages(data.images);
     if (data.images.length !== 0) {
       setStopGeneratePolling(true);
     }
   };
+
+  // const getRemainingStableDiffusionCount = () => {
+  //   if (typeof window === "undefined") return 0;
+  //   return );
+  // };
+
+  const [remainingCount, setRemainingCount] = useState<number>(3);
+
+  useEffect(() => {
+    setRemainingCount(
+      3 - (parseInt(getCookie("counter", document.cookie)) || 0)
+    );
+  }, [stableDiffusionId]);
 
   const generateStableDiffusion = async () => {
     setImages([]);
@@ -267,8 +290,12 @@ const Home: NextPage = () => {
         `${SERVER_URL}/generate/stable-diffusion`,
         {
           prompt,
+        },
+        {
+          withCredentials: true,
         }
       );
+
       const data = response.data;
       setStableDiffusionId(data.id);
     }
@@ -543,9 +570,17 @@ const Home: NextPage = () => {
                     </StyledBadge>
                   </Grid>
                   <Grid item xs={6} sm={6}>
+                    {/* Get the counter value from document.cookie and display as text */}
+
                     <StyledBadge
-                      badgeContent={"3/3"}
-                      color="success"
+                      badgeContent={`${remainingCount}/3`}
+                      color={
+                        remainingCount === 0
+                          ? "error"
+                          : remainingCount === 1
+                          ? "warning"
+                          : "success"
+                      }
                       style={{ width: "100%" }}
                     >
                       <Tooltip title="Coming soon" placement="top">
@@ -555,8 +590,11 @@ const Home: NextPage = () => {
                             width: "100%",
                             backgroundColor: grey[200],
                             color: "black",
+                            textDecoration:
+                              remainingCount === 0 ? "line-through" : "none",
+                            // textDecorationColor: "grey",
                           }}
-                          // disabled
+                          disabled={remainingCount === 0}
                           loading={
                             invoice && images.length === 0 && !showRefund
                           }
