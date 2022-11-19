@@ -162,7 +162,7 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
                   onChange={async (event, newValue) => {
                     if (newValue) {
                       setRating(newValue);
-                      // await sendFeedback(newValue, feedback, email);
+                      await sendFeedback(newValue, feedback, email);
                     }
                   }}
                 />
