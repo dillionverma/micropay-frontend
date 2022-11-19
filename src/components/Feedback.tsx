@@ -223,7 +223,7 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
                   }
                 }}
                 onChange={(e: any) => {
-                  console.log(e);
+                  // console.log(e);
                   setEmail(e.target.value);
                   if (!!feedback && !!email) {
                     setDisabled(false);
