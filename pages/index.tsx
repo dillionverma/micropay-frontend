@@ -621,7 +621,7 @@ const Home: NextPage = () => {
                   Cost: 1000 satoshis
                 </Typography>
                 <Box sx={{ width: "100%" }}>
-                  <Divider style={{ margin: "16px 0" }} />
+                  <Divider style={{ margin: "4px 0" }} />
                   <Typography variant="subtitle1" align="center">
                     <strong>Status:</strong> {orderStatus}
                   </Typography>
@@ -643,7 +643,7 @@ const Home: NextPage = () => {
                     </a>
                     .
                   </Typography>
-                  <Divider style={{ margin: "16px 0" }} />
+                  <Divider style={{ margin: "4px 0" }} />
                 </Box>
 
                 <Grid
@@ -652,6 +652,7 @@ const Home: NextPage = () => {
                   direction="row"
                   textAlign={"center"}
                   justifyContent="center"
+                  style={{ marginTop: "-7px" }}
                   className="button-container"
                 >
                   <Grid container xs>
