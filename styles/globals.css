@@ -6,14 +6,19 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
- a {
+a {
   color: inherit;
   text-decoration: none;
 }
 
-
 /* Override item styles */
 .MuiGrid-item {
   padding-left: 0 !important;
-  padding: 8px 8px !important;
+  padding: 4px 4px !important;
+}
+
+@media (max-width: 600px) {
+  #qr-code {
+    display: none;
+  }
 }

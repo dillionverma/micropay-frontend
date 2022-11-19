@@ -4,6 +4,7 @@ import BrushIcon from "@mui/icons-material/BrushOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import PhoneIcon from "@mui/icons-material/Phone";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RedditIcon from "@mui/icons-material/Reddit";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -15,6 +16,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Grid,
   IconButton,
   ImageList,
@@ -347,9 +349,9 @@ const Home: NextPage = () => {
                     <h1 className={styles.title}>Dalle-2 Image Generator</h1>
                   </div>
                 </a>
-                <p style={{ margin: "auto", fontSize: "20px" }}>
+                {/* <p style={{ margin: "auto", fontSize: "20px" }}>
                   With Facial Restoration
-                </p>
+                </p> */}
               </>
             )}
 
@@ -607,7 +609,7 @@ const Home: NextPage = () => {
                     margin: "0",
                   }}
                 >
-                  Please scan the QR Code below
+                  We use Bitcoin ⚡️ Lightning.
                 </Typography>
                 <Typography
                   style={{
@@ -618,114 +620,10 @@ const Home: NextPage = () => {
                 >
                   Cost: 1000 satoshis
                 </Typography>
-                <Grid
-                  container
-                  spacing={2}
-                  direction="row"
-                  justifyContent="center"
-                  className="button-container"
-                  // alignItems={"stretch"}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    justifyContent="center"
-                    display={"flex"}
-                    flexDirection="column"
-                  >
-                    <QRCodeSVG
-                      style={{
-                        width: "100%",
-                        alignSelf: "center",
-                      }}
-                      width={200}
-                      height={200}
-                      onClick={() => {
-                        window.open(`lightning:${invoice?.request}`);
-                      }}
-                      value={invoice?.request || ""}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} textAlign="center">
-                    <Button
-                      style={{ margin: "10px auto", width: "70%" }}
-                      variant="outlined"
-                      onClick={() => {
-                        setOpen(true);
-                        navigator.clipboard.writeText(invoice.request);
-                      }}
-                      startIcon={<ContentCopyIcon />}
-                    >
-                      Copy invoice
-                    </Button>
-                    <Typography variant="h6" gutterBottom>
-                      OR
-                    </Typography>
-                    <Grid container>
-                      <Grid item xs={12} sm={12} md={12}>
-                        <Button
-                          variant="outlined"
-                          style={{
-                            color: "#00D632",
-                            borderColor: "#00D632",
-                            width: "100%",
-                            margin: "0px 0",
-                          }}
-                          onClick={() => {
-                            window.open("https://cash.app/$");
-                          }}
-                          startIcon={<CashappIcon />}
-                        >
-                          Open Cash App
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} sm={12} md={12}>
-                        <Button
-                          variant="outlined"
-                          style={{
-                            color: "#000",
-                            borderColor: "#000",
-                            width: "100%",
-                            margin: "0px 0",
-                          }}
-                          startIcon={<StrikeIcon />}
-                          onClick={() => {
-                            window.open("https://strike.me/");
-                          }}
-                        >
-                          Open Strike.me
-                        </Button>
-                      </Grid>
-
-                      <Grid item xs={12} md={12}>
-                        {/* <Divider style={{ margin: "16px 0" }} />
-                        <Typography variant="h5" gutterBottom>
-                          Advanced
-                        </Typography> */}
-                        <Button
-                          variant="outlined"
-                          style={{
-                            color: "#f7931a",
-                            borderColor: "#f7931a",
-                            width: "100%",
-                            margin: "0px 0",
-                          }}
-                          startIcon={<LightningIcon />}
-                          onClick={() => {
-                            window.open(`lightning:${invoice?.request}`);
-                          }}
-                        >
-                          Open Lightning App
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
                 <Box sx={{ width: "100%" }}>
+                  <Divider style={{ margin: "4px 0" }} />
                   <Typography variant="subtitle1" align="center">
-                    Status: {orderStatus}
+                    <strong>Status:</strong> {orderStatus}
                   </Typography>
                   <LinearProgress
                     style={{ margin: "10px 0" }}
@@ -745,7 +643,183 @@ const Home: NextPage = () => {
                     </a>
                     .
                   </Typography>
+                  <Divider style={{ margin: "4px 0" }} />
                 </Box>
+
+                <Grid
+                  container
+                  spacing={0}
+                  direction="row"
+                  textAlign={"center"}
+                  justifyContent="center"
+                  style={{ marginTop: "-7px" }}
+                  className="button-container"
+                >
+                  <Grid container xs>
+                    <Grid
+                      item
+                      xs={12}
+                      display="flex"
+                      justifyContent={"center"}
+                      alignItems="center"
+                    >
+                      <Grid item xs={3}>
+                        <Typography variant="h6">STEP 0</Typography>
+                      </Grid>
+                      <Grid item xs={9} direction="column">
+                        <Grid item xs={12} sm={12} md={12}>
+                          <Button
+                            style={{
+                              margin: "10px auto",
+                              width: "100%",
+                              fontSize: "0.8rem",
+                            }}
+                            variant="outlined"
+                            color="secondary"
+                            onClick={() => {
+                              window.open("/how-to-use", "_blank");
+                            }}
+                            startIcon={<QuestionMarkIcon />}
+                          >
+                            Learn how this works
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={12}
+                      display="flex"
+                      justifyContent={"center"}
+                      alignItems="center"
+                    >
+                      <Grid item xs={3}>
+                        <Typography variant="h6">STEP 1</Typography>
+                      </Grid>
+                      <Grid item xs={9} direction="column">
+                        <Grid item xs={12} sm={12} md={12}>
+                          <TextField
+                            id="outlined-read-only-input"
+                            fullWidth
+                            label=""
+                            defaultValue={invoice?.request}
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                          />
+                          <Button
+                            style={{ margin: "10px auto", width: "100%" }}
+                            variant="outlined"
+                            onClick={() => {
+                              setOpen(true);
+                              navigator.clipboard.writeText(invoice?.request);
+                            }}
+                            startIcon={<ContentCopyIcon />}
+                          >
+                            Copy invoice
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      display="flex"
+                      justifyContent={"center"}
+                      alignItems="center"
+                    >
+                      <Grid item xs={3}>
+                        <Typography variant="h6">STEP 2</Typography>
+                      </Grid>
+                      <Grid item xs={9} direction="column">
+                        <Grid container>
+                          <Grid item xs={12} sm={12} md={12}>
+                            <Button
+                              variant="outlined"
+                              style={{
+                                color: "#00D632",
+                                borderColor: "#00D632",
+                                width: "100%",
+                                margin: "0px 0",
+                              }}
+                              onClick={() => {
+                                window.open("https://cash.app/$");
+                              }}
+                              startIcon={<CashappIcon />}
+                            >
+                              Open Cash App
+                            </Button>
+                          </Grid>
+                          <Grid item xs={12} sm={12} md={12}>
+                            <Button
+                              variant="outlined"
+                              style={{
+                                color: "#000",
+                                borderColor: "#000",
+                                width: "100%",
+                                margin: "0px 0",
+                              }}
+                              startIcon={<StrikeIcon />}
+                              onClick={() => {
+                                window.open("https://strike.me/");
+                              }}
+                            >
+                              Open Strike.me
+                            </Button>
+                          </Grid>
+
+                          <Grid item xs={12} md={12}>
+                            {/* <Divider style={{ margin: "16px 0" }} /> */}
+                            <Button
+                              variant="outlined"
+                              style={{
+                                color: "#f7931a",
+                                borderColor: "#f7931a",
+                                width: "100%",
+                                margin: "0px 0",
+                              }}
+                              startIcon={<LightningIcon />}
+                              onClick={() => {
+                                window.open(`lightning:${invoice?.request}`);
+                              }}
+                            >
+                              Open Lightning App
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid container id="qr-code" xs={5}>
+                    <Grid
+                      item
+                      justifyContent={"center"}
+                      alignItems="center"
+                      display={"flex"}
+                      flexDirection="row"
+                    >
+                      <Divider orientation="vertical">OR</Divider>
+                      {/* <Typography variant="h6">OR</Typography> */}
+
+                      <div style={{ paddingLeft: "8px" }}>
+                        <QRCodeSVG
+                          style={{
+                            width: "100%",
+                            alignSelf: "center",
+                          }}
+                          width={200}
+                          height={200}
+                          onClick={() => {
+                            window.open(`lightning:${invoice?.request}`);
+                          }}
+                          value={invoice?.request || ""}
+                        />
+                        <span>Scan QR Code</span>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
 
                 <div style={{ paddingTop: "2%" }}></div>
 
@@ -795,10 +869,19 @@ const Home: NextPage = () => {
             )}
             {images.length > 0 && (
               <>
-                <Alert severity="success" sx={{ fontSize: "0.85rem" }}>
-                  <AlertTitle>Success</AlertTitle>
-                  Please download images before clicking off!
-                </Alert>
+                <Container style={{ padding: "0px" }}>
+                  <Alert
+                    severity="success"
+                    width="100%"
+                    sx={{ fontSize: "0.85rem" }}
+                  >
+                    <AlertTitle>Success</AlertTitle>
+                    Please download images before clicking off!
+                  </Alert>
+                </Container>
+                <Typography>
+                  <strong>Prompt: </strong> {prompt}
+                </Typography>
 
                 <ImageList
                   sx={{ width: "100%" }}

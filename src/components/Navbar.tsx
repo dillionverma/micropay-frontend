@@ -43,9 +43,14 @@ export default function DrawerAppBar() {
           </Typography>
           <Box sx={{ display: { sm: "block" } }}>
             {navItems.map((item) => (
-              <Link key={item.name} href={item.link}>
+              <a
+                key={item.name}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Button sx={{ color: "#000" }}>{item.name}</Button>
-              </Link>
+              </a>
             ))}
           </Box>
         </Toolbar>
