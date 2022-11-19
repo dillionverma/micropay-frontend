@@ -872,8 +872,7 @@ const Home: NextPage = () => {
                 <Container style={{ padding: "0px" }}>
                   <Alert
                     severity="success"
-                    width="100%"
-                    sx={{ fontSize: "0.85rem" }}
+                    sx={{ fontSize: "0.85rem", width: "100%" }}
                   >
                     <AlertTitle>Success</AlertTitle>
                     Please download images before clicking off!
