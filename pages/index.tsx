@@ -45,12 +45,10 @@ import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { requestProvider } from "webln";
-import {
-  CashappIcon,
-  LightningIcon,
-  StrikeIcon,
-} from "../src/assets/icons/icons";
+import { LightningIcon } from "../src/assets/icons/icons";
+import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
+import StrikeMeModal from "../src/components/StrikeMeModal";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
@@ -169,7 +167,7 @@ const Home: NextPage = () => {
   const [stopGeneratePolling, setStopGeneratePolling] =
     useState<boolean>(false);
   const [orderStatus, setOrderStatus] = useState<string>(DEFAULT_ORDER_STATUS);
-  const [open, setOpen] = useState<boolean>(false);
+  const [snackOpen, setSnackOpen] = useState<boolean>(false);
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
   const [mockImages, setMockImages] = useState<boolean>(false);
@@ -261,7 +259,7 @@ const Home: NextPage = () => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
+    setSnackOpen(false);
   };
 
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -645,7 +643,7 @@ const Home: NextPage = () => {
                     margin: "0",
                   }}
                 >
-                  We use Bitcoin ⚡️ Lightning.
+                  We accept Bitcoin on Lightning Network ⚡️.
                 </Typography>
                 <Typography
                   style={{
@@ -748,7 +746,7 @@ const Home: NextPage = () => {
                             style={{ margin: "10px auto", width: "100%" }}
                             variant="outlined"
                             onClick={() => {
-                              setOpen(true);
+                              setSnackOpen(true);
                               navigator.clipboard.writeText(invoice?.request);
                             }}
                             startIcon={<ContentCopyIcon />}
@@ -771,38 +769,10 @@ const Home: NextPage = () => {
                       <Grid item xs={9} direction="column">
                         <Grid container>
                           <Grid item xs={12} sm={12} md={12}>
-                            <Button
-                              variant="outlined"
-                              style={{
-                                color: "#00D632",
-                                borderColor: "#00D632",
-                                width: "100%",
-                                margin: "0px 0",
-                              }}
-                              onClick={() => {
-                                window.open("https://cash.app/$");
-                              }}
-                              startIcon={<CashappIcon />}
-                            >
-                              Open Cash App
-                            </Button>
+                            <CashappModal />
                           </Grid>
                           <Grid item xs={12} sm={12} md={12}>
-                            <Button
-                              variant="outlined"
-                              style={{
-                                color: "#000",
-                                borderColor: "#000",
-                                width: "100%",
-                                margin: "0px 0",
-                              }}
-                              startIcon={<StrikeIcon />}
-                              onClick={() => {
-                                window.open("https://strike.me/");
-                              }}
-                            >
-                              Open Strike.me
-                            </Button>
+                            <StrikeMeModal />
                           </Grid>
 
                           <Grid item xs={12} md={12}>
@@ -877,7 +847,7 @@ const Home: NextPage = () => {
                 </Button>
 
                 <Snackbar
-                  open={open}
+                  open={snackOpen}
                   autoHideDuration={3000}
                   onClose={handleClose}
                   anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
