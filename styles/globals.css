@@ -14,10 +14,10 @@ a {
 /* Override item styles */
 .MuiGrid-item {
   padding-left: 0 !important;
-  padding: 8px 8px !important;
+  padding: 4px 4px !important;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 600px) {
   #qr-code {
     display: none;
   }
