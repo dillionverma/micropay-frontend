@@ -336,6 +336,37 @@ const Home: NextPage = () => {
         <title>micropay</title>
         <meta name="description" content="Micropay" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <title>Dalle-2 Image Generator | micropay</title>
+        <meta name="title" content="Dalle-2 Image Generator | micropay" />
+
+        <meta
+          name="description"
+          content="anonymous and pay-per-use generative AI software"
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://micropay.ai/" />
+        <meta
+          property="og:title"
+          content="Dalle-2 Image Generator | micropay"
+        />
+        <meta
+          property="og:description"
+          content="anonymous and pay-per-use generative AI software"
+        />
+        <meta property="og:image" content="/micropay-preview.png" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://micropay.ai/" />
+        <meta
+          property="twitter:title"
+          content="Dalle-2 Image Generator | micropay"
+        />
+        <meta
+          property="twitter:description"
+          content="anonymous and pay-per-use generative AI software"
+        />
+        <meta property="twitter:image" content="/micropay-preview.png" />
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"
