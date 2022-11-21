@@ -60,16 +60,19 @@ const filter = new Filter();
 filter.addWords("dickbutt");
 filter.removeWords("god");
 
-interface Invoice {
-  chain_address: string;
-  created_at: Date;
-  description: string;
+interface DalleResponse {
   id: string;
-  mtokens: string;
-  payment: string;
+  uuid: string;
   request: string;
-  secret: string;
-  tokens: number;
+  // chain_address: string;
+  // created_at: Date;
+  // description: string;
+  // id: string;
+  // mtokens: string;
+  // payment: string;
+  // request: string;
+  // secret: string;
+  // tokens: number;
 }
 
 export const officialPrompts = [
@@ -144,13 +147,13 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     right: -3,
     border: `2px solid ${theme.palette.background.paper}`,
     padding: "0 4px",
-    backgroundColor: "#7B1AF7",
+    // backgroundColor: "#7B1AF7",
   },
 }));
 
 const Home: NextPage = () => {
   const [showTitle, setShowTitle] = useState<boolean>(true);
-  const [invoice, setInvoice] = useState<Invoice>();
+  const [invoice, setInvoice] = useState<DalleResponse>();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [refundErrorMessage, setRefundErrorMessage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
@@ -171,6 +174,15 @@ const Home: NextPage = () => {
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
   const [mockImages, setMockImages] = useState<boolean>(false);
+
+  const getCookie = (name: string, cookie: string): string => {
+    // Get name followed by anything except a semicolon
+    var cookiestring = RegExp(name + "=[^;]+").exec(cookie);
+    // Return everything after the equal sign, or an empty string if the cookie name not found
+    return decodeURIComponent(
+      !!cookiestring ? cookiestring.toString().replace(/^[^=]+./, "") : ""
+    );
+  };
 
   // prompt the user if they try and leave with unsaved changes
   useEffect(() => {
@@ -193,7 +205,9 @@ const Home: NextPage = () => {
     };
   }, [images]);
 
-  const getInvoice = async (prompt: string): Promise<Invoice | null> => {
+  const getDalleResponse = async (
+    prompt: string
+  ): Promise<DalleResponse | null> => {
     const response = await axios.post(
       `${SERVER_URL}/invoice`,
       { prompt },
@@ -210,18 +224,7 @@ const Home: NextPage = () => {
     }
   };
 
-  const sendRefundInvoice = async (
-    invoiceId: string,
-    refundInvoice: string
-  ): Promise<void> => {
-    const refund = await axios.post(`${SERVER_URL}/refund`, {
-      invoiceId: invoiceId,
-      refundInvoice: refundInvoice,
-    });
-    setRefundInvoiceSent(true);
-  };
-
-  const getStatus = async (): Promise<void> => {
+  const getStatusDalle = async (): Promise<void> => {
     if (!invoice?.id) return;
     const response = await axios.get(
       `${SERVER_URL}/generate/${invoice.id}/status?webln=${weblnEnabled}`
@@ -241,10 +244,63 @@ const Home: NextPage = () => {
     }
   };
 
+  const [stableDiffusionId, setStableDiffusionId] = useState<string>("");
+
+  const getStatusStableDiffusion = async (): Promise<void> => {
+    const response = await axios.get(
+      `${SERVER_URL}/generate/stable-diffusion/${stableDiffusionId}/status`
+    );
+
+    const data = response.data;
+    setImages(data.images);
+    if (data.images.length !== 0) {
+      setStopGeneratePolling(true);
+    }
+  };
+
+  const [remainingCount, setRemainingCount] = useState<number>(0);
+
+  useEffect(() => {
+    setRemainingCount(
+      3 - (parseInt(getCookie("counter", document.cookie)) || 0)
+    );
+  }, [stableDiffusionId]);
+
+  const generateStableDiffusion = async () => {
+    setImages([]);
+    setOrderStatus("Generating Stable Diffusion Images...");
+    setStopGeneratePolling(false);
+    if (!prompt) {
+      setErrorMessage("Please enter a prompt");
+    } else if (filter.isProfane(prompt)) {
+      setErrorMessage("Please enter a non-profane prompt");
+    } else {
+      const response = await axios.post(
+        `${SERVER_URL}/generate/stable-diffusion`,
+        {
+          prompt,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        setStableDiffusionId(data.id);
+      } else {
+        setServerErrorAlert(true);
+      }
+    }
+  };
+
   useInterval(
     async () => {
       if (invoice && images.length === 0) {
-        await getStatus();
+        await getStatusDalle();
+      }
+      if (stableDiffusionId && images.length === 0) {
+        await getStatusStableDiffusion();
       }
     },
     stopGeneratePolling ? null : 1000 // when set to null, we stop polling
@@ -280,7 +336,7 @@ const Home: NextPage = () => {
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
-      const invoice = await getInvoice(prompt);
+      const invoice = await getDalleResponse(prompt);
 
       setShowTitle(false);
       setImages([]);
@@ -302,12 +358,7 @@ const Home: NextPage = () => {
   const [promptPlaceholder, setPromptPlaceholder] = useState<string>(
     "An avocado in the form of an armchair"
   );
-  const getPrompt = () => {
-    const randomPrompt =
-      officialPrompts[Math.floor(Math.random() * officialPrompts.length)];
 
-    setPrompt(randomPrompt);
-  };
   const reset = () => {
     setImages([]);
     setInvoice(undefined);
@@ -317,6 +368,7 @@ const Home: NextPage = () => {
     setPrompt("");
     setShowTitle(true);
     setImages([]);
+    setStableDiffusionId("");
   };
 
   useInterval(() => {
@@ -432,7 +484,7 @@ const Home: NextPage = () => {
               </strong>
             )}
 
-            {!invoice && (
+            {!invoice && !stableDiffusionId && (
               <>
                 <TextField
                   error={!!errorMessage && images.length === 0}
@@ -513,29 +565,48 @@ const Home: NextPage = () => {
                     </StyledBadge>
                   </Grid>
                   <Grid item xs={6} sm={6}>
+                    {/* Get the counter value from document.cookie and display as text */}
                     <StyledBadge
-                      badgeContent={"3/3"}
-                      color="success"
+                      badgeContent={`${remainingCount}/3`}
+                      color={
+                        remainingCount <= 0
+                          ? "error"
+                          : remainingCount === 1
+                          ? "warning"
+                          : "success"
+                      }
                       style={{ width: "100%" }}
                     >
-                      <Tooltip title="Coming soon" placement="top">
-                        <LoadingButton
-                          variant="contained"
-                          style={{
-                            width: "100%",
-                            backgroundColor: grey[200],
-                            color: "black",
-                          }}
-                          // disabled
-                          loading={
-                            invoice && images.length === 0 && !showRefund
-                          }
-                          // loadingIndicator="Waiting for payment…"
-                          loadingPosition="center"
-                          // onClick={() => generateButtonHandler()}
-                        >
-                          Non Dalle (FREE)
-                        </LoadingButton>
+                      <Tooltip
+                        title={
+                          remainingCount === 0
+                            ? "You have run out of free credits"
+                            : "Generate a free image"
+                        }
+                        placement="top"
+                      >
+                        <span style={{ width: "100%" }}>
+                          <LoadingButton
+                            variant="contained"
+                            style={{
+                              width: "100%",
+                              backgroundColor: grey[200],
+                              color: "black",
+                              textDecoration:
+                                remainingCount === 0 ? "line-through" : "none",
+                              // textDecorationColor: "grey",
+                            }}
+                            disabled={remainingCount === 0}
+                            loading={
+                              invoice && images.length === 0 && !showRefund
+                            }
+                            // loadingIndicator="Waiting for payment…"
+                            loadingPosition="center"
+                            onClick={() => generateStableDiffusion()}
+                          >
+                            Non Dalle (FREE)
+                          </LoadingButton>
+                        </span>
                       </Tooltip>
                     </StyledBadge>
                   </Grid>
@@ -618,59 +689,6 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {
-              //Refund page not being used anymore
-              /* {showRefund && !refundInvoiceSent && (
-              <>
-                <Alert severity="error">
-                  <AlertTitle>Uh-oh</AlertTitle>
-                  Something went wrong during generation. Please paste an
-                  invoice for a refund
-                </Alert>
-                <div
-                  style={{
-                    flexDirection: "row",
-                    display: "flex",
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    style={{ flex: 1 }}
-                    fullWidth
-                    id="refund"
-                    error={!!refundErrorMessage && images.length === 0}
-                    helperText={refundErrorMessage}
-                    label="Enter an invoice for a refund. We will manually refund you."
-                    onChange={(e) => {
-                      setRefundInvoice(e.target.value);
-                      setRefundErrorMessage("");
-                    }}
-                  />
-                  <Button
-                    style={{ marginLeft: "10px" }}
-                    variant="outlined"
-                    onClick={async () => {
-                      if (invoice && refundInvoice) {
-                        await sendRefundInvoice(invoice.id, refundInvoice);
-                        setRefundErrorMessage("");
-                      } else {
-                        setRefundErrorMessage("Please enter an invoice");
-                      }
-                    }}
-                    startIcon={<SendIcon />}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </>
-            )} */
-            }
-
-            {/* {showRefund && refundInvoiceSent && (
-              <Alert severity="success">
-                Refund invoice sent. We will manually refund you.
-              </Alert>
-            )} */}
             {invoice && images.length === 0 && !showRefund && (
               <>
                 <Typography
@@ -910,6 +928,80 @@ const Home: NextPage = () => {
                 )} */}
               </>
             )}
+
+            {stableDiffusionId && images.length === 0 && (
+              <>
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "12%",
+                    paddingRight: "12%",
+                  }}
+                >
+                  Your free generation is being processed with Stable Diffusion
+                </Typography>
+
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="subtitle1" align="center">
+                    Status: {orderStatus}
+                  </Typography>
+                  <LinearProgress
+                    style={{ margin: "10px 0" }}
+                    variant="determinate"
+                    value={progress}
+                  />
+                  <Typography variant="subtitle1" align="center">
+                    Experiencing problems? Message us on{" "}
+                    <a
+                      href="https://t.me/+zGVesHQRbl04NTA5"
+                      style={{ color: "#0070f3" }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Telegram
+                    </a>
+                    .
+                  </Typography>
+                </Box>
+
+                <div style={{ paddingTop: "2%" }}></div>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{
+                    // color: "#f7931a",
+                    // borderColor: "#f7931a",
+                    // width: "100%",
+                    margin: "8px 0",
+                  }}
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Go Back
+                </Button>
+
+                <Snackbar
+                  open={snackOpen}
+                  autoHideDuration={3000}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    Copied!
+                  </Alert>
+                </Snackbar>
+              </>
+            )}
             {images.length > 0 && (
               <>
                 <Container style={{ padding: "0px" }}>
@@ -925,11 +1017,7 @@ const Home: NextPage = () => {
                   <strong>Prompt: </strong> {prompt}
                 </Typography>
 
-                <ImageList
-                  sx={{ width: "100%" }}
-                  cols={largeScreen ? 4 : 4}
-                  rowHeight={150}
-                >
+                <ImageList sx={{ width: "100%" }} cols={images.length}>
                   {images.map((item, i) => (
                     <Link
                       href={item}
@@ -1035,7 +1123,7 @@ const Home: NextPage = () => {
                     </Button>
                   </Grid>
                 </Grid>
-                <Feedback invoiceId={invoice?.id} />
+                <Feedback id={invoice?.uuid || stableDiffusionId} />
               </>
             )}
             {/* <FAQ /> */}

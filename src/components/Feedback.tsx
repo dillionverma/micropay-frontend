@@ -18,7 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import { SERVER_URL } from "../../pages";
 
-const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
+const Feedback = ({ id }: { id: string | undefined }) => {
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
   const [feedbackSent, setFeedbackSent] = useState<boolean>(false);
@@ -35,7 +35,7 @@ const Feedback = ({ invoiceId }: { invoiceId: string | undefined }) => {
       rating,
       feedback,
       email,
-      invoiceId,
+      uuid: id,
     });
   };
 
