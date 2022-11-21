@@ -1011,11 +1011,7 @@ const Home: NextPage = () => {
                   <strong>Prompt: </strong> {prompt}
                 </Typography>
 
-                <ImageList
-                  sx={{ width: "100%" }}
-                  cols={images.length}
-                  rowHeight={300}
-                >
+                <ImageList sx={{ width: "100%" }} cols={images.length}>
                   {images.map((item, i) => (
                     <Link
                       href={item}
