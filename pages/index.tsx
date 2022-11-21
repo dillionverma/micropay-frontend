@@ -354,7 +354,10 @@ const Home: NextPage = () => {
           property="og:description"
           content="anonymous and pay-per-use generative AI software"
         />
-        <meta property="og:image" content="/micropay-preview.png" />
+        <meta
+          property="og:image"
+          content="https://micropay.ai/micropay-preview.png"
+        />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://micropay.ai/" />
@@ -366,7 +369,10 @@ const Home: NextPage = () => {
           property="twitter:description"
           content="anonymous and pay-per-use generative AI software"
         />
-        <meta property="twitter:image" content="/micropay-preview.png" />
+        <meta
+          property="twitter:image"
+          content="https://micropay.ai/micropay-preview.png"
+        />
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"
