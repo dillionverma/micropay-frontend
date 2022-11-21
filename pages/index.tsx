@@ -264,10 +264,12 @@ const Home: NextPage = () => {
     }
   };
 
-  const [remainingCount, setRemainingCount] = useState<number>(3);
+  const [remainingCount, setRemainingCount] = useState<number>(0);
 
   useEffect(() => {
-    setRemainingCount(parseInt(getCookie("counter", document.cookie)) || 0);
+    setRemainingCount(
+      3 - (parseInt(getCookie("counter", document.cookie)) || 0)
+    );
   }, [stableDiffusionId]);
 
   const generateStableDiffusion = async () => {
@@ -572,7 +574,7 @@ const Home: NextPage = () => {
                     <StyledBadge
                       badgeContent={`${remainingCount}/3`}
                       color={
-                        remainingCount === 0
+                        remainingCount <= 0
                           ? "error"
                           : remainingCount === 1
                           ? "warning"
