@@ -60,16 +60,19 @@ const filter = new Filter();
 filter.addWords("dickbutt");
 filter.removeWords("god");
 
-interface Invoice {
-  chain_address: string;
-  created_at: Date;
-  description: string;
+interface DalleResponse {
   id: string;
-  mtokens: string;
-  payment: string;
+  uuid: string;
   request: string;
-  secret: string;
-  tokens: number;
+  // chain_address: string;
+  // created_at: Date;
+  // description: string;
+  // id: string;
+  // mtokens: string;
+  // payment: string;
+  // request: string;
+  // secret: string;
+  // tokens: number;
 }
 
 export const officialPrompts = [
@@ -150,7 +153,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 
 const Home: NextPage = () => {
   const [showTitle, setShowTitle] = useState<boolean>(true);
-  const [invoice, setInvoice] = useState<Invoice>();
+  const [invoice, setInvoice] = useState<DalleResponse>();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [refundErrorMessage, setRefundErrorMessage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
@@ -202,7 +205,9 @@ const Home: NextPage = () => {
     };
   }, [images]);
 
-  const getInvoice = async (prompt: string): Promise<Invoice | null> => {
+  const getDalleResponse = async (
+    prompt: string
+  ): Promise<DalleResponse | null> => {
     const response = await axios.post(
       `${SERVER_URL}/invoice`,
       { prompt },
@@ -217,17 +222,6 @@ const Home: NextPage = () => {
       setServerErrorAlert(true);
       return null;
     }
-  };
-
-  const sendRefundInvoice = async (
-    invoiceId: string,
-    refundInvoice: string
-  ): Promise<void> => {
-    const refund = await axios.post(`${SERVER_URL}/refund`, {
-      invoiceId: invoiceId,
-      refundInvoice: refundInvoice,
-    });
-    setRefundInvoiceSent(true);
   };
 
   const getStatusDalle = async (): Promise<void> => {
@@ -342,7 +336,7 @@ const Home: NextPage = () => {
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
-      const invoice = await getInvoice(prompt);
+      const invoice = await getDalleResponse(prompt);
 
       setShowTitle(false);
       setImages([]);
@@ -364,12 +358,7 @@ const Home: NextPage = () => {
   const [promptPlaceholder, setPromptPlaceholder] = useState<string>(
     "An avocado in the form of an armchair"
   );
-  const getPrompt = () => {
-    const randomPrompt =
-      officialPrompts[Math.floor(Math.random() * officialPrompts.length)];
 
-    setPrompt(randomPrompt);
-  };
   const reset = () => {
     setImages([]);
     setInvoice(undefined);
@@ -1132,7 +1121,7 @@ const Home: NextPage = () => {
                     </Button>
                   </Grid>
                 </Grid>
-                <Feedback invoiceId={invoice?.id} />
+                <Feedback id={invoice?.uuid || stableDiffusionId} />
               </>
             )}
             {/* <FAQ /> */}
