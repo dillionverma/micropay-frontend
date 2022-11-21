@@ -980,7 +980,7 @@ const Home: NextPage = () => {
                 </Button>
 
                 <Snackbar
-                  open={open}
+                  open={snackOpen}
                   autoHideDuration={3000}
                   onClose={handleClose}
                   anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
