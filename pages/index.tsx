@@ -264,17 +264,10 @@ const Home: NextPage = () => {
     }
   };
 
-  // const getRemainingStableDiffusionCount = () => {
-  //   if (typeof window === "undefined") return 0;
-  //   return );
-  // };
-
   const [remainingCount, setRemainingCount] = useState<number>(3);
 
   useEffect(() => {
-    setRemainingCount(
-      3 - (parseInt(getCookie("counter", document.cookie)) || 0)
-    );
+    setRemainingCount(parseInt(getCookie("counter", document.cookie)) || 0);
   }, [stableDiffusionId]);
 
   const generateStableDiffusion = async () => {
@@ -296,8 +289,12 @@ const Home: NextPage = () => {
         }
       );
 
-      const data = response.data;
-      setStableDiffusionId(data.id);
+      if (response.status === 200) {
+        const data = response.data;
+        setStableDiffusionId(data.id);
+      } else {
+        setServerErrorAlert(true);
+      }
     }
   };
 
@@ -571,7 +568,6 @@ const Home: NextPage = () => {
                   </Grid>
                   <Grid item xs={6} sm={6}>
                     {/* Get the counter value from document.cookie and display as text */}
-
                     <StyledBadge
                       badgeContent={`${remainingCount}/3`}
                       color={
@@ -583,27 +579,36 @@ const Home: NextPage = () => {
                       }
                       style={{ width: "100%" }}
                     >
-                      <Tooltip title="Coming soon" placement="top">
-                        <LoadingButton
-                          variant="contained"
-                          style={{
-                            width: "100%",
-                            backgroundColor: grey[200],
-                            color: "black",
-                            textDecoration:
-                              remainingCount === 0 ? "line-through" : "none",
-                            // textDecorationColor: "grey",
-                          }}
-                          disabled={remainingCount === 0}
-                          loading={
-                            invoice && images.length === 0 && !showRefund
-                          }
-                          // loadingIndicator="Waiting for payment…"
-                          loadingPosition="center"
-                          onClick={() => generateStableDiffusion()}
-                        >
-                          Non Dalle (FREE)
-                        </LoadingButton>
+                      <Tooltip
+                        title={
+                          remainingCount === 0
+                            ? "You have run out of free credits"
+                            : "Generate a free image"
+                        }
+                        placement="top"
+                      >
+                        <span style={{ width: "100%" }}>
+                          <LoadingButton
+                            variant="contained"
+                            style={{
+                              width: "100%",
+                              backgroundColor: grey[200],
+                              color: "black",
+                              textDecoration:
+                                remainingCount === 0 ? "line-through" : "none",
+                              // textDecorationColor: "grey",
+                            }}
+                            disabled={remainingCount === 0}
+                            loading={
+                              invoice && images.length === 0 && !showRefund
+                            }
+                            // loadingIndicator="Waiting for payment…"
+                            loadingPosition="center"
+                            onClick={() => generateStableDiffusion()}
+                          >
+                            Non Dalle (FREE)
+                          </LoadingButton>
+                        </span>
                       </Tooltip>
                     </StyledBadge>
                   </Grid>
