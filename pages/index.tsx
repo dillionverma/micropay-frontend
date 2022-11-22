@@ -393,7 +393,7 @@ const Home: NextPage = () => {
 
         <meta
           name="description"
-          content="anonymous and pay-per-use generative AI software"
+          content="Anonymous and pay-as-you-go generative AI software"
         />
 
         <meta property="og:type" content="website" />
@@ -404,7 +404,7 @@ const Home: NextPage = () => {
         />
         <meta
           property="og:description"
-          content="anonymous and pay-per-use generative AI software"
+          content="Anonymous and pay-as-you-go generative AI software"
         />
         <meta
           property="og:image"
@@ -419,7 +419,7 @@ const Home: NextPage = () => {
         />
         <meta
           property="twitter:description"
-          content="anonymous and pay-per-use generative AI software"
+          content="Anonymous and pay-as-you-go generative AI software"
         />
         <meta
           property="twitter:image"
