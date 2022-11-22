@@ -696,6 +696,7 @@ const Home: NextPage = () => {
                     fontSize: "1.4rem",
                     fontWeight: "bold",
                     margin: "0",
+                    textAlign: "center",
                   }}
                 >
                   We accept Bitcoin on Lightning Network ⚡️.
