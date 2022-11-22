@@ -1,18 +1,15 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { Container } from "@mui/material";
-import {
-  CashappIcon,
-  LightningIcon,
-  StrikeIcon,
-} from "../../src/assets/icons/icons";
-import { maxHeight } from "@mui/system";
+import { StrikeIcon } from "../../src/assets/icons/icons";
 
-export default function StrikeMeModal() {
+export default function StrikeMeModal({
+  trackEvent,
+}: {
+  trackEvent: (label: string, params: object) => void;
+}) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
@@ -27,6 +24,7 @@ export default function StrikeMeModal() {
         }}
         onClick={() => {
           setModalOpen(true);
+          trackEvent("Click: Open Strike.Me", {});
         }}
         startIcon={<StrikeIcon />}
       >
@@ -78,6 +76,7 @@ export default function StrikeMeModal() {
               }}
               onClick={() => {
                 window.open("https://strike.me/download/", "_blank");
+                trackEvent("Click: Take Me to Strike.Me", {});
               }}
               startIcon={<StrikeIcon />}
             >

@@ -8,8 +8,6 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RedditIcon from "@mui/icons-material/Reddit";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import LoadingButton from "@mui/lab/LoadingButton";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
 import {
   Alert,
   AlertTitle,
@@ -50,8 +48,8 @@ import { requestProvider } from "webln";
 import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
-import { Mixpanel } from "../src/mixpanel";
 import StrikeMeModal from "../src/components/StrikeMeModal";
+import { Mixpanel } from "../src/mixpanel";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
@@ -85,7 +83,7 @@ export const officialPrompts = [
   "an astronaut lounging in a tropical resort in space, pixel art",
   "an oil pastel drawing of an annoyed cat in a spaceship",
   "a sunlit indoor lounge area with a pool with clear water and another pool with translucent pastel pink water, next to a big window, digital art",
-  '"a sea otter with a pearl earring" by Johannes Vermeer',
+  'a sea otter with a pearl earring" by Johannes Vermeer',
   "photograph of an astronaut riding a horse",
   "crayon drawing of several cute colorful monsters with ice cream cone bodies on dark blue paper",
   "a pencil and watercolor drawing of a bright city in the future with flying cars",
@@ -202,6 +200,10 @@ const Home: NextPage = () => {
       e.preventDefault();
       return (e.returnValue = warningText);
     };
+    if (images.length > 0) {
+      trackEvent("Conversion: 1000 sats", {});
+    }
+
     window.addEventListener("beforeunload", handleWindowClose);
     return () => {
       window.removeEventListener("beforeunload", handleWindowClose);
@@ -225,6 +227,41 @@ const Home: NextPage = () => {
       setServerErrorAlert(true);
       return null;
     }
+  };
+
+  const sendRefundInvoice = async (
+    invoiceId: string,
+    refundInvoice: string
+  ): Promise<void> => {
+    const refund = await axios.post(`${SERVER_URL}/refund`, {
+      invoiceId: invoiceId,
+      refundInvoice: refundInvoice,
+    });
+    setRefundInvoiceSent(true);
+  };
+
+  const trackEvent = (label: string, params: object) => {
+    const environment = process.env.NODE_ENV;
+    Mixpanel.track(label, {
+      ...params,
+      environment,
+      showTitle,
+      errorMessage,
+      refundErrorMessage,
+      prompt,
+      images,
+      showRefund,
+      progress,
+      weblnEnabled,
+      serverErrorAlert,
+      refundInvoice,
+      refundInvoiceSent,
+      stopGeneratePolling,
+      orderStatus,
+      snackOpen,
+      showBulkPurchase,
+      mockImages,
+    });
   };
 
   const getStatusDalle = async (): Promise<void> => {
@@ -324,7 +361,6 @@ const Home: NextPage = () => {
   const largeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const generateButtonHandler = async () => {
-    Mixpanel.track("Generate Button Clicked", { hello: "world" });
     // let flagged = { data: false };
     // try {
     //   flagged = await axios.post(`${SERVER_URL}/check-prompt`, { prompt });
@@ -509,6 +545,7 @@ const Home: NextPage = () => {
                             aria-label="generate"
                             onClick={() => {
                               setPrompt(getRandomElement(officialPrompts));
+                              trackEvent("Click: Surprise Me", {});
                             }}
                           >
                             <AutoFixHighIcon style={{ color: "#000" }} />
@@ -519,11 +556,12 @@ const Home: NextPage = () => {
                   }}
                   onFocus={() => {
                     setPromptPressed(true);
+                    trackEvent("Click: Prompt TextField", {});
                   }}
                   onBlur={() => {
                     setPromptPressed(false);
+                    trackEvent("Click: Prompt TextField Blur", {});
                   }}
-                  // onKeyDown={handleKeypress}
                   onChange={(e) => {
                     // setPromptPressed(true);
                     setPrompt(e.target.value);
@@ -562,7 +600,10 @@ const Home: NextPage = () => {
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
                         loadingPosition="center"
-                        onClick={() => generateButtonHandler()}
+                        onClick={() => {
+                          generateButtonHandler();
+                          trackEvent("Click: Dalle ($0.20)", {});
+                        }}
                       >
                         Dalle ($0.20)
                       </LoadingButton>
@@ -606,7 +647,10 @@ const Home: NextPage = () => {
                             }
                             // loadingIndicator="Waiting for payment…"
                             loadingPosition="center"
-                            onClick={() => generateStableDiffusion()}
+                            onClick={() => {
+                              generateStableDiffusion();
+                              trackEvent("Click: Non Dalle (FREE)", {});
+                            }}
                           >
                             Non Dalle (FREE)
                           </LoadingButton>
@@ -627,7 +671,10 @@ const Home: NextPage = () => {
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
                         loadingPosition="center"
-                        onClick={() => setShowBulkPurchase(!showBulkPurchase)}
+                        onClick={() => {
+                          setShowBulkPurchase(!showBulkPurchase);
+                          trackEvent("Click: Bulk Purchase", {});
+                        }}
                       >
                         Bulk Purchase
                       </LoadingButton>
@@ -650,7 +697,8 @@ const Home: NextPage = () => {
                       size="medium"
                       style={{ color: "red", borderColor: "red" }}
                       onClick={() => {
-                        window.open("https://reddit.com/r/micropay");
+                        window.open("https://reddit.com/r/micropay", "_blank");
+                        trackEvent("Click: Join Reddit", {});
                       }}
                       startIcon={<RedditIcon style={{ color: "red" }} />}
                     >
@@ -665,6 +713,7 @@ const Home: NextPage = () => {
                       style={{ color: "#2AABEE", borderColor: "#2AABEE" }}
                       onClick={() => {
                         window.open("https://t.me/+zGVesHQRbl04NTA5");
+                        trackEvent("Click: Join Telegram", {});
                       }}
                       startIcon={<TelegramIcon style={{ color: "#2AABEE" }} />}
                     >
@@ -678,6 +727,7 @@ const Home: NextPage = () => {
                       size="medium"
                       onClick={() => {
                         window.open("https://calendly.com/micropay/");
+                        trackEvent("Click: Call Us", {});
                       }}
                       style={{
                         color: "#33cc33",
@@ -703,7 +753,7 @@ const Home: NextPage = () => {
                     textAlign: "center",
                   }}
                 >
-                  We accept Bitcoin on Lightning Network ⚡️.
+                  We accept Bitcoin on Lightning ⚡️
                 </Typography>
                 <Typography
                   style={{
@@ -715,7 +765,7 @@ const Home: NextPage = () => {
                   Cost: 1000 satoshis
                 </Typography>
                 <Box sx={{ width: "100%" }}>
-                  <Divider style={{ margin: "4px 0" }} />
+                  <Divider style={{ margin: "10px 0" }} />
                   <Typography variant="subtitle1" align="center">
                     <strong>Status:</strong> {orderStatus}
                   </Typography>
@@ -737,7 +787,7 @@ const Home: NextPage = () => {
                     </a>
                     .
                   </Typography>
-                  <Divider style={{ margin: "4px 0" }} />
+                  <Divider style={{ margin: "10px 0" }} />
                 </Box>
 
                 <Grid
@@ -772,6 +822,7 @@ const Home: NextPage = () => {
                             color="secondary"
                             onClick={() => {
                               window.open("/how-to-use", "_blank");
+                              trackEvent("Click: Learn How This Works", {});
                             }}
                             startIcon={<QuestionMarkIcon />}
                           >
@@ -808,6 +859,7 @@ const Home: NextPage = () => {
                             onClick={() => {
                               setSnackOpen(true);
                               navigator.clipboard.writeText(invoice?.request);
+                              trackEvent("Click: Copy Invoice", { ...invoice });
                             }}
                             startIcon={<ContentCopyIcon />}
                           >
@@ -829,10 +881,10 @@ const Home: NextPage = () => {
                       <Grid item xs={9} direction="column">
                         <Grid container>
                           <Grid item xs={12} sm={12} md={12}>
-                            <CashappModal />
+                            <CashappModal trackEvent={trackEvent} />
                           </Grid>
                           <Grid item xs={12} sm={12} md={12}>
-                            <StrikeMeModal />
+                            <StrikeMeModal trackEvent={trackEvent} />
                           </Grid>
 
                           <Grid item xs={12} md={12}>
@@ -848,6 +900,7 @@ const Home: NextPage = () => {
                               startIcon={<LightningIcon />}
                               onClick={() => {
                                 window.open(`lightning:${invoice?.request}`);
+                                trackEvent("Click: Open Lightning App", {});
                               }}
                             >
                               Open Lightning App
@@ -878,6 +931,7 @@ const Home: NextPage = () => {
                           height={200}
                           onClick={() => {
                             window.open(`lightning:${invoice?.request}`);
+                            trackEvent("Click: QR Code", {});
                           }}
                           value={invoice?.request || ""}
                         />
@@ -901,6 +955,7 @@ const Home: NextPage = () => {
                   startIcon={<ArrowBackIcon />}
                   onClick={() => {
                     reset();
+                    trackEvent("Click: Go Back", {});
                   }}
                 >
                   Go Back
@@ -1056,6 +1111,7 @@ const Home: NextPage = () => {
                                     .toString(36)
                                     .substring(2, 15)}.png`
                                 );
+                                trackEvent("Click: Download Single Image", {});
                               }}
                               // aria-label={`star ${item.title}`}
                             >
@@ -1102,6 +1158,7 @@ const Home: NextPage = () => {
                               .toLowerCase()}.zip`
                           );
                         });
+                        trackEvent("Click: Download All", {});
                       }}
                     >
                       Download All
@@ -1122,13 +1179,17 @@ const Home: NextPage = () => {
                       startIcon={<BrushIcon />}
                       onClick={async () => {
                         reset();
+                        trackEvent("Click: Create More", {});
                       }}
                     >
                       CREATE MORE
                     </Button>
                   </Grid>
                 </Grid>
-                <Feedback id={invoice?.uuid || stableDiffusionId} />
+                <Feedback
+                  id={invoice?.uuid || stableDiffusionId}
+                  trackEvent={trackEvent}
+                />
               </>
             )}
             {/* <FAQ /> */}

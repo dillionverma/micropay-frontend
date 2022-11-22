@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { Mixpanel } from "../mixpanel";
 
 const navItems = [
   // {
@@ -28,7 +29,14 @@ export default function DrawerAppBar() {
             component="div"
             sx={{ flexGrow: 1, display: { sm: "block" } }}
           >
-            <a href="/">
+            <a
+              href="/"
+              onClick={() =>
+                Mixpanel.track("Click: µ", {
+                  environment: process.env.NODE_ENV,
+                })
+              }
+            >
               <img
                 src="/apple-icon.png"
                 alt="Micropay Logo"
@@ -48,6 +56,11 @@ export default function DrawerAppBar() {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  Mixpanel.track("Click: How to Use", {
+                    environment: process.env.NODE_ENV,
+                  })
+                }
               >
                 <Button sx={{ color: "#000" }}>{item.name}</Button>
               </a>

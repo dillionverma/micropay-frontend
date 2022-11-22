@@ -18,7 +18,13 @@ import SendIcon from "@mui/icons-material/Send";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import { SERVER_URL } from "../../pages";
 
-const Feedback = ({ id }: { id: string | undefined }) => {
+const Feedback = ({
+  id,
+  trackEvent,
+}: {
+  id: string | undefined;
+  trackEvent: (label: string, params: object) => void;
+}) => {
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
   const [feedbackSent, setFeedbackSent] = useState<boolean>(false);
@@ -40,8 +46,8 @@ const Feedback = ({ id }: { id: string | undefined }) => {
   };
 
   const handleFeedback = async () => {
-    await sendFeedback(rating || 0, feedback, email);
     setFeedbackSent(true);
+    await sendFeedback(rating || 0, feedback, email);
   };
 
   return (
@@ -67,6 +73,7 @@ const Feedback = ({ id }: { id: string | undefined }) => {
                 style={{ color: "red", borderColor: "red" }}
                 onClick={() => {
                   window.open("https://reddit.com/r/micropay");
+                  trackEvent("Click: Join Reddit", {});
                 }}
                 startIcon={<RedditIcon style={{ color: "red" }} />}
               >
@@ -81,6 +88,7 @@ const Feedback = ({ id }: { id: string | undefined }) => {
                 style={{ color: "#2AABEE", borderColor: "#2AABEE" }}
                 onClick={() => {
                   window.open("https://t.me/+zGVesHQRbl04NTA5");
+                  trackEvent("Click: Join Telegram", {});
                 }}
                 startIcon={<TelegramIcon style={{ color: "#2AABEE" }} />}
               >
@@ -94,6 +102,7 @@ const Feedback = ({ id }: { id: string | undefined }) => {
                 size="medium"
                 onClick={() => {
                   window.open("https://calendly.com/micropay/");
+                  trackEvent("Click: Call Us", {});
                 }}
                 style={{
                   color: "#33cc33",
@@ -163,6 +172,7 @@ const Feedback = ({ id }: { id: string | undefined }) => {
                     if (newValue) {
                       setRating(newValue);
                       await sendFeedback(newValue, feedback, email);
+                      trackEvent("Click: Rating", { rating, feedback, email });
                     }
                   }}
                 />
@@ -211,15 +221,30 @@ const Feedback = ({ id }: { id: string | undefined }) => {
             >
               <TextField
                 required={true}
-                type="text"
+                type="email"
                 error={error}
+                helperText={error && "Enter a valid email"}
                 style={{ flex: 1 }}
                 fullWidth
                 id="feedback"
                 label="Enter Your Email"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleFeedback();
+                    if (feedback && email) {
+                      handleFeedback();
+                      trackEvent("Click: Send Feedback (Enabled)", {
+                        rating,
+                        feedback,
+                        email,
+                      });
+                    } else {
+                      setError(true);
+                      trackEvent("Click: Send Feedback (Disabled)", {
+                        rating,
+                        feedback,
+                        email,
+                      });
+                    }
                   }
                 }}
                 onChange={(e: any) => {
@@ -237,9 +262,25 @@ const Feedback = ({ id }: { id: string | undefined }) => {
                 variant="outlined"
                 onClick={async () => {
                   if (feedback && email) {
+                    if (!email.includes("@")) {
+                      setError(true);
+                      return;
+                    } else {
+                      setError(false);
+                    }
                     handleFeedback();
+                    trackEvent("Click: Send Feedback (Enabled)", {
+                      rating,
+                      feedback,
+                      email,
+                    });
                   } else {
                     setError(true);
+                    trackEvent("Click: Send Feedback (Disabled)", {
+                      rating,
+                      feedback,
+                      email,
+                    });
                   }
                 }}
                 startIcon={<SendIcon />}

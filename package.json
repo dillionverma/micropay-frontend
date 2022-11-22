@@ -33,6 +33,7 @@
   "devDependencies": {
     "@types/bad-words": "^3.0.1",
     "@types/file-saver": "^2.0.5",
+    "@types/mixpanel-browser": "^2.38.0",
     "@types/node": "^18.7.15",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
