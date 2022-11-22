@@ -55,7 +55,7 @@ export default function CashappModal() {
           </Box>
           <Box display="flex" justifyContent="center">
             <img
-              src="paying-lightning.gif"
+              src="cashapp-lightning-qr.gif"
               alt="cashapp"
               style={{ maxWidth: "85%" }}
             />

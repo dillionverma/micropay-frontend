@@ -12,7 +12,7 @@ import {
 } from "../../src/assets/icons/icons";
 import { maxHeight } from "@mui/system";
 
-export default function CashappModal() {
+export default function StrikeMeModal() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
