@@ -603,10 +603,10 @@ const Home: NextPage = () => {
                         loadingPosition="center"
                         onClick={() => {
                           generateButtonHandler();
-                          trackEvent("Click: Dalle ($0.20)", {});
+                          trackEvent("Click: Dalle ($0.16)", {});
                         }}
                       >
-                        Dalle ($0.20)
+                        Dalle ($0.16)
                       </LoadingButton>
                     </StyledBadge>
                   </Grid>
