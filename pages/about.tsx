@@ -57,7 +57,7 @@ export default function About() {
             <p>
               We decided to solve our problem by creating a wrapper around the
               OpenAI API allowing us to pay-per-use instead of prepaying in
-              bulk. Payments were accepted over the lightning network and the
+              bulk. Payments are accepted over the lightning network and the
               product is completely anonymous allowing anyone to use it without
               having to sign up. It&apos;s like a vending machine, but for
               software.
