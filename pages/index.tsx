@@ -143,7 +143,7 @@ const DEFAULT_ORDER_STATUS = "Order received! Waiting for payment...";
 export const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3002"
-    : "https://micropay-server.onrender.com";
+    : "https://api.micropay.ai";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {
