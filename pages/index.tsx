@@ -743,60 +743,6 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {
-              //Refund page not being used anymore
-              /* {showRefund && !refundInvoiceSent && (
-              <>
-                <Alert severity="error">
-                  <AlertTitle>Uh-oh</AlertTitle>
-                  Something went wrong during generation. Please paste an
-                  invoice for a refund
-                </Alert>
-                <div
-                  style={{
-                    flexDirection: "row",
-                    display: "flex",
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    style={{ flex: 1 }}
-                    fullWidth
-                    id="refund"
-                    error={!!refundErrorMessage && images.length === 0}
-                    helperText={refundErrorMessage}
-                    label="Enter an invoice for a refund. We will manually refund you."
-                    onChange={(e) => {
-                      setRefundInvoice(e.target.value);
-                      setRefundErrorMessage("");
-                    }}
-                  />
-                  <Button
-                    style={{ marginLeft: "10px" }}
-                    variant="outlined"
-                    onClick={async () => {
-                      if (invoice && refundInvoice) {
-                        await sendRefundInvoice(invoice.id, refundInvoice);
-                        setRefundErrorMessage("");
-                      } else {
-                        setRefundErrorMessage("Please enter an invoice");
-                      }
-                    }}
-                    startIcon={<SendIcon />}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </>
-            )} */
-            }
-
-            {/* {showRefund && refundInvoiceSent && (
-              <Alert severity="success">
-                Refund invoice sent. We will manually refund you.
-              </Alert>
-            )} */}
-
             {!invoice && !showTitle ? (
               <Skeleton
                 style={{ width: "100%", height: "75vh" }}
