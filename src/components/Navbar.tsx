@@ -1,9 +1,9 @@
+import { Alert } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
 import { Mixpanel } from "../mixpanel";
 
 const navItems = [
@@ -17,6 +17,30 @@ const navItems = [
 export default function DrawerAppBar() {
   return (
     <>
+      <Alert
+        variant="filled"
+        severity="success"
+        style={{
+          justifyContent: "center",
+          backgroundColor: "#7b1af7",
+          fontSize: "1.2rem",
+        }}
+        icon={false}
+      >
+        🎉 We&apos;re live on{" "}
+        <a
+          href="https://www.producthunt.com/posts/micro-dalle-2"
+          style={{
+            color: "white",
+            textDecoration: "underline",
+          }}
+          target="_blank"
+          rel="noreferrer"
+        >
+          ProductHunt
+        </a>{" "}
+        right now 🎉
+      </Alert>
       <AppBar
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
