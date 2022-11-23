@@ -382,7 +382,7 @@ const Home: NextPage = () => {
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
       setProgress(20);
-      const invoice = await getInvoice(prompt);
+      const invoice = await getDalleResponse(prompt);
       try {
         const webln = await requestProvider();
         setWebLnEnabled(true);
