@@ -309,7 +309,7 @@ const Home: NextPage = () => {
 
   const generateStableDiffusion = async () => {
     setImages([]);
-    setOrderStatus("Generating Stable Diffusion Images...");
+    setOrderStatus("Generating 1 Stable Diffusion Image...");
     setStopGeneratePolling(false);
     if (!prompt) {
       setErrorMessage("Please enter a prompt");
@@ -1006,11 +1006,23 @@ const Home: NextPage = () => {
                   align="center"
                   style={{
                     fontWeight: "bold",
-                    paddingLeft: "12%",
-                    paddingRight: "12%",
+                    paddingLeft: "8%",
+                    paddingRight: "8%",
                   }}
                 >
-                  Your free generation is being processed with Stable Diffusion
+                  Your 1 free generation is being processed with Stable
+                  Diffusion
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "8%",
+                    paddingRight: "8%",
+                  }}
+                >
+                  Note: The Dalle-2 version includes 4 images per generation
                 </Typography>
 
                 <Box sx={{ width: "100%" }}>
