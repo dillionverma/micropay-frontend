@@ -23,7 +23,7 @@ export default function DrawerAppBar() {
         style={{
           justifyContent: "center",
           backgroundColor: "#7b1af7",
-          fontSize: "1.08rem",
+          fontSize: "1.00rem",
         }}
         icon={false}
       >

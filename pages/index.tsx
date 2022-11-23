@@ -177,6 +177,7 @@ const Home: NextPage = () => {
 
   const [showBulkPurchase, setShowBulkPurchase] = useState<boolean>(false);
   const [mockImages, setMockImages] = useState<boolean>(false);
+  const [pickNonDalle, setPickNonDalle] = useState<boolean>(false);
 
   const getCookie = (name: string, cookie: string): string => {
     // Get name followed by anything except a semicolon
@@ -506,11 +507,13 @@ const Home: NextPage = () => {
                     }}
                   >
                     <img
-                      style={{ width: "17%", paddingTop: "4px" }}
+                      style={{ width: "19%", paddingTop: "2px" }}
                       src="./micro.png"
                       alt=""
                     />
-                    <h1 className={styles.title}>Dalle-2 Image Generator</h1>
+                    <h1 className={styles.title} style={{ marginLeft: "6px" }}>
+                      Dalle-2 Image Generator
+                    </h1>
                   </div>
                 </a>
                 {/* <p style={{ margin: "auto", fontSize: "20px" }}>
@@ -650,6 +653,7 @@ const Home: NextPage = () => {
                             loadingPosition="center"
                             onClick={() => {
                               generateStableDiffusion();
+                              setPickNonDalle(true);
                               trackEvent("Click: Non Dalle (FREE)", {});
                             }}
                           >
@@ -759,7 +763,7 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {!invoice && !showTitle ? (
+            {!invoice && !showTitle && !pickNonDalle ? (
               <Skeleton
                 style={{ width: "100%", height: "75vh" }}
                 animation="wave"
@@ -771,7 +775,7 @@ const Home: NextPage = () => {
                 <>
                   <Typography
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.3rem",
                       fontWeight: "bold",
                       margin: "0",
                     }}
@@ -780,7 +784,7 @@ const Home: NextPage = () => {
                   </Typography>
                   <Typography
                     style={{
-                      fontSize: "1.5rem",
+                      fontSize: "1.4rem",
                       fontWeight: "bold",
                       margin: "0",
                     }}
@@ -799,7 +803,7 @@ const Home: NextPage = () => {
                     />
 
                     <Typography variant="subtitle1" align="center">
-                      Experiencing problems? Message us on{" "}
+                      Problems? Message us on{" "}
                       <a
                         href="https://t.me/+zGVesHQRbl04NTA5"
                         style={{ color: "#0070f3" }}
@@ -1015,7 +1019,7 @@ const Home: NextPage = () => {
               )
             )}
 
-            {!stableDiffusionId && !showTitle ? (
+            {!stableDiffusionId && !showTitle && pickNonDalle ? (
               <Skeleton
                 style={{ width: "100%", height: "75vh" }}
                 animation="wave"
