@@ -1147,15 +1147,14 @@ const Home: NextPage = () => {
                   ))}
                 </ImageList>
                 <Grid container direction="row">
-                  <Grid item xs={6} md={6}>
+                  <Grid item xs={12} md={12}>
                     <Button
                       variant="outlined"
                       fullWidth
                       size="medium"
                       style={{
                         color: "#000000",
-                        paddingTop: "2vh",
-                        paddingBottom: "2vh",
+
                         borderColor: "#000000",
                         fontSize: "0.79rem",
                       }}
@@ -1186,7 +1185,7 @@ const Home: NextPage = () => {
                       Download All
                     </Button>
                   </Grid>
-                  <Grid item xs={6} md={6}>
+                  <Grid item xs={12} md={12}>
                     <Button
                       variant="outlined"
                       fullWidth
@@ -1194,8 +1193,7 @@ const Home: NextPage = () => {
                       style={{
                         color: "#7b1af7",
                         borderColor: "#7b1af7",
-                        paddingTop: "2vh",
-                        paddingBottom: "2vh",
+
                         fontSize: "0.79rem",
                       }}
                       startIcon={<BrushIcon />}
@@ -1204,7 +1202,7 @@ const Home: NextPage = () => {
                         trackEvent("Click: Create More", {});
                       }}
                     >
-                      CREATE MORE
+                      CREATE ANOTHER
                     </Button>
                   </Grid>
                 </Grid>
