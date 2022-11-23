@@ -51,7 +51,7 @@ export default function HowTo() {
           <img
             src="strike-lightning-qr.gif"
             alt="cashapp"
-            style={{ maxWidth: "85%" }}
+            style={{ maxWidth: "85%", paddingTop: "1.5vh" }}
           />
         </Grid>
 
@@ -64,29 +64,25 @@ export default function HowTo() {
             style={{ marginTop: "3vh" }}
           />
           <h2 style={{ display: "inline" }}>LN Wallet</h2>
-          <h2>
-            <a
-              href="https://twitter.com/dillionverma/status/1567508869944938503"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#229ED9" }}
-            >
-              Demo
-            </a>
-          </h2>
+          <img
+            src="lightning-demo.gif"
+            alt="ln-icon"
+            className="ln-icon"
+            style={{ marginTop: "3vh", maxWidth: "85%", paddingTop: "1.4vh" }}
+          />
         </Grid>
       </Grid>
       <Grid md={12}>
         <br></br>
         <h2>See Below for more Info</h2>
         <p style={{ fontSize: "20px", marginTop: "-5px" }}>
-          How to use your
+          How to convert
           <a
             href="https://youtu.be/Cfc3JGb3a4g?t=492"
             style={{ color: "#229ED9" }}
           >
             {" "}
-            Bitcoin on the Lightning Network
+            Bitcoin into Lightning
           </a>
         </p>
         <p style={{ fontSize: "20px", marginTop: "-5px" }}>
