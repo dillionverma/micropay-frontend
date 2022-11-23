@@ -25,6 +25,7 @@ import {
   InputAdornment,
   LinearProgress,
   Link,
+  Skeleton,
   Snackbar,
   Stack,
   TextField,
@@ -49,6 +50,7 @@ import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
 import StrikeMeModal from "../src/components/StrikeMeModal";
+import { Mixpanel } from "../src/mixpanel";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
@@ -82,7 +84,7 @@ export const officialPrompts = [
   "an astronaut lounging in a tropical resort in space, pixel art",
   "an oil pastel drawing of an annoyed cat in a spaceship",
   "a sunlit indoor lounge area with a pool with clear water and another pool with translucent pastel pink water, next to a big window, digital art",
-  '"a sea otter with a pearl earring" by Johannes Vermeer',
+  'a sea otter with a pearl earring" by Johannes Vermeer',
   "photograph of an astronaut riding a horse",
   "crayon drawing of several cute colorful monsters with ice cream cone bodies on dark blue paper",
   "a pencil and watercolor drawing of a bright city in the future with flying cars",
@@ -199,6 +201,10 @@ const Home: NextPage = () => {
       e.preventDefault();
       return (e.returnValue = warningText);
     };
+    if (images.length == 4) {
+      trackEvent("Conversion: 1000 sats", {});
+    }
+
     window.addEventListener("beforeunload", handleWindowClose);
     return () => {
       window.removeEventListener("beforeunload", handleWindowClose);
@@ -222,6 +228,41 @@ const Home: NextPage = () => {
       setServerErrorAlert(true);
       return null;
     }
+  };
+
+  const sendRefundInvoice = async (
+    invoiceId: string,
+    refundInvoice: string
+  ): Promise<void> => {
+    const refund = await axios.post(`${SERVER_URL}/refund`, {
+      invoiceId: invoiceId,
+      refundInvoice: refundInvoice,
+    });
+    setRefundInvoiceSent(true);
+  };
+
+  const trackEvent = (label: string, params: object) => {
+    const environment = process.env.NODE_ENV;
+    Mixpanel.track(label, {
+      ...params,
+      environment,
+      showTitle,
+      errorMessage,
+      refundErrorMessage,
+      prompt,
+      images,
+      showRefund,
+      progress,
+      weblnEnabled,
+      serverErrorAlert,
+      refundInvoice,
+      refundInvoiceSent,
+      stopGeneratePolling,
+      orderStatus,
+      snackOpen,
+      showBulkPurchase,
+      mockImages,
+    });
   };
 
   const getStatusDalle = async (): Promise<void> => {
@@ -268,7 +309,7 @@ const Home: NextPage = () => {
 
   const generateStableDiffusion = async () => {
     setImages([]);
-    setOrderStatus("Generating Stable Diffusion Images...");
+    setOrderStatus("Generating 1 Stable Diffusion Image...");
     setStopGeneratePolling(false);
     if (!prompt) {
       setErrorMessage("Please enter a prompt");
@@ -336,13 +377,12 @@ const Home: NextPage = () => {
     } else if (filter.isProfane(prompt)) {
       setErrorMessage("Please enter a non-profane prompt");
     } else {
-      const invoice = await getDalleResponse(prompt);
-
       setShowTitle(false);
       setImages([]);
       setOrderStatus(DEFAULT_ORDER_STATUS);
       setStopGeneratePolling(false);
       setProgress(20);
+      const invoice = await getDalleResponse(prompt);
       try {
         const webln = await requestProvider();
         setWebLnEnabled(true);
@@ -484,7 +524,7 @@ const Home: NextPage = () => {
               </strong>
             )}
 
-            {!invoice && !stableDiffusionId && (
+            {!invoice && !stableDiffusionId && showTitle && (
               <>
                 <TextField
                   error={!!errorMessage && images.length === 0}
@@ -505,6 +545,7 @@ const Home: NextPage = () => {
                             aria-label="generate"
                             onClick={() => {
                               setPrompt(getRandomElement(officialPrompts));
+                              trackEvent("Click: Surprise Me", {});
                             }}
                           >
                             <AutoFixHighIcon style={{ color: "#000" }} />
@@ -515,11 +556,12 @@ const Home: NextPage = () => {
                   }}
                   onFocus={() => {
                     setPromptPressed(true);
+                    trackEvent("Click: Prompt TextField", {});
                   }}
                   onBlur={() => {
                     setPromptPressed(false);
+                    trackEvent("Click: Prompt TextField Blur", {});
                   }}
-                  // onKeyDown={handleKeypress}
                   onChange={(e) => {
                     // setPromptPressed(true);
                     setPrompt(e.target.value);
@@ -558,7 +600,10 @@ const Home: NextPage = () => {
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
                         loadingPosition="center"
-                        onClick={() => generateButtonHandler()}
+                        onClick={() => {
+                          generateButtonHandler();
+                          trackEvent("Click: Dalle ($0.20)", {});
+                        }}
                       >
                         Dalle ($0.20)
                       </LoadingButton>
@@ -602,7 +647,10 @@ const Home: NextPage = () => {
                             }
                             // loadingIndicator="Waiting for payment…"
                             loadingPosition="center"
-                            onClick={() => generateStableDiffusion()}
+                            onClick={() => {
+                              generateStableDiffusion();
+                              trackEvent("Click: Non Dalle (FREE)", {});
+                            }}
                           >
                             Non Dalle (FREE)
                           </LoadingButton>
@@ -623,7 +671,10 @@ const Home: NextPage = () => {
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
                         loadingPosition="center"
-                        onClick={() => setShowBulkPurchase(!showBulkPurchase)}
+                        onClick={() => {
+                          setShowBulkPurchase(!showBulkPurchase);
+                          trackEvent("Click: Bulk Purchase", {});
+                        }}
                       >
                         Bulk Purchase
                       </LoadingButton>
@@ -646,7 +697,8 @@ const Home: NextPage = () => {
                       size="medium"
                       style={{ color: "red", borderColor: "red" }}
                       onClick={() => {
-                        window.open("https://reddit.com/r/micropay");
+                        window.open("https://reddit.com/r/micropay", "_blank");
+                        trackEvent("Click: Join Reddit", {});
                       }}
                       startIcon={<RedditIcon style={{ color: "red" }} />}
                     >
@@ -661,6 +713,7 @@ const Home: NextPage = () => {
                       style={{ color: "#2AABEE", borderColor: "#2AABEE" }}
                       onClick={() => {
                         window.open("https://t.me/+zGVesHQRbl04NTA5");
+                        trackEvent("Click: Join Telegram", {});
                       }}
                       startIcon={<TelegramIcon style={{ color: "#2AABEE" }} />}
                     >
@@ -674,6 +727,7 @@ const Home: NextPage = () => {
                       size="medium"
                       onClick={() => {
                         window.open("https://calendly.com/micropay/");
+                        trackEvent("Click: Call Us", {});
                       }}
                       style={{
                         color: "#33cc33",
@@ -689,235 +743,249 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {invoice && images.length === 0 && !showRefund && (
-              <>
-                <Typography
-                  style={{
-                    fontSize: "1.4rem",
-                    fontWeight: "bold",
-                    margin: "0",
-                    textAlign: "center",
-                  }}
-                >
-                  We accept Bitcoin on Lightning Network ⚡️.
-                </Typography>
-                <Typography
-                  style={{
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    margin: "0",
-                  }}
-                >
-                  Cost: 1000 satoshis
-                </Typography>
-                <Box sx={{ width: "100%" }}>
-                  <Divider style={{ margin: "4px 0" }} />
-                  <Typography variant="subtitle1" align="center">
-                    <strong>Status:</strong> {orderStatus}
+            {!invoice && !showTitle ? (
+              <Skeleton
+                style={{ width: "100%", height: "75vh" }}
+                animation="wave"
+              />
+            ) : (
+              invoice &&
+              images.length === 0 &&
+              !showRefund && (
+                <>
+                  <Typography
+                    style={{
+                      fontSize: "1.4rem",
+                      fontWeight: "bold",
+                      margin: "0",
+                    }}
+                  >
+                    We accept Bitcoin on Lightning ⚡️
                   </Typography>
-                  <LinearProgress
-                    style={{ margin: "10px 0" }}
-                    variant="determinate"
-                    value={progress}
-                  />
-
-                  <Typography variant="subtitle1" align="center">
-                    Experiencing problems? Message us on{" "}
-                    <a
-                      href="https://t.me/+zGVesHQRbl04NTA5"
-                      style={{ color: "#0070f3" }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Telegram
-                    </a>
-                    .
+                  <Typography
+                    style={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                      margin: "0",
+                    }}
+                  >
+                    Cost: 1000 satoshis
                   </Typography>
-                  <Divider style={{ margin: "4px 0" }} />
-                </Box>
+                  <Box sx={{ width: "100%" }}>
+                    <Divider style={{ margin: "10px 0" }} />
+                    <Typography variant="subtitle1" align="center">
+                      <strong>Status:</strong> {orderStatus}
+                    </Typography>
+                    <LinearProgress
+                      style={{ margin: "10px 0" }}
+                      variant="determinate"
+                      value={progress}
+                    />
 
-                <Grid
-                  container
-                  spacing={0}
-                  direction="row"
-                  textAlign={"center"}
-                  justifyContent="center"
-                  style={{ marginTop: "-7px" }}
-                  className="button-container"
-                >
-                  <Grid container xs>
-                    <Grid
-                      item
-                      xs={12}
-                      display="flex"
-                      justifyContent={"center"}
-                      alignItems="center"
-                    >
-                      <Grid item xs={3}>
-                        <Typography variant="h6">STEP 0</Typography>
-                      </Grid>
-                      <Grid item xs={9} direction="column">
-                        <Grid item xs={12} sm={12} md={12}>
-                          <Button
-                            style={{
-                              margin: "10px auto",
-                              width: "100%",
-                              fontSize: "0.8rem",
-                            }}
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => {
-                              window.open("/how-to-use", "_blank");
-                            }}
-                            startIcon={<QuestionMarkIcon />}
-                          >
-                            Learn how this works
-                          </Button>
+                    <Typography variant="subtitle1" align="center">
+                      Experiencing problems? Message us on{" "}
+                      <a
+                        href="https://t.me/+zGVesHQRbl04NTA5"
+                        style={{ color: "#0070f3" }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Telegram
+                      </a>
+                      .
+                    </Typography>
+                    <Divider style={{ margin: "10px 0" }} />
+                  </Box>
+
+                  <Grid
+                    container
+                    spacing={0}
+                    direction="row"
+                    textAlign={"center"}
+                    justifyContent="center"
+                    style={{ marginTop: "-7px" }}
+                    className="button-container"
+                  >
+                    <Grid container xs>
+                      <Grid
+                        item
+                        xs={12}
+                        display="flex"
+                        justifyContent={"center"}
+                        alignItems="center"
+                      >
+                        <Grid item xs={3}>
+                          <Typography variant="h6">STEP 0</Typography>
                         </Grid>
-                      </Grid>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      display="flex"
-                      justifyContent={"center"}
-                      alignItems="center"
-                    >
-                      <Grid item xs={3}>
-                        <Typography variant="h6">STEP 1</Typography>
-                      </Grid>
-                      <Grid item xs={9} direction="column">
-                        <Grid item xs={12} sm={12} md={12}>
-                          <TextField
-                            id="outlined-read-only-input"
-                            fullWidth
-                            label=""
-                            defaultValue={invoice?.request}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                          <Button
-                            style={{ margin: "10px auto", width: "100%" }}
-                            variant="outlined"
-                            onClick={() => {
-                              setSnackOpen(true);
-                              navigator.clipboard.writeText(invoice?.request);
-                            }}
-                            startIcon={<ContentCopyIcon />}
-                          >
-                            Copy invoice
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      display="flex"
-                      justifyContent={"center"}
-                      alignItems="center"
-                    >
-                      <Grid item xs={3}>
-                        <Typography variant="h6">STEP 2</Typography>
-                      </Grid>
-                      <Grid item xs={9} direction="column">
-                        <Grid container>
+                        <Grid item xs={9} direction="column">
                           <Grid item xs={12} sm={12} md={12}>
-                            <CashappModal />
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <StrikeMeModal />
-                          </Grid>
-
-                          <Grid item xs={12} md={12}>
-                            {/* <Divider style={{ margin: "16px 0" }} /> */}
                             <Button
-                              variant="outlined"
                               style={{
-                                color: "#f7931a",
-                                borderColor: "#f7931a",
+                                margin: "10px auto",
                                 width: "100%",
-                                margin: "0px 0",
+                                fontSize: "0.8rem",
                               }}
-                              startIcon={<LightningIcon />}
+                              variant="outlined"
+                              color="secondary"
                               onClick={() => {
-                                window.open(`lightning:${invoice?.request}`);
+                                window.open("/how-to-use", "_blank");
+                                trackEvent("Click: Learn How This Works", {});
                               }}
+                              startIcon={<QuestionMarkIcon />}
                             >
-                              Open Lightning App
+                              Learn how this works
                             </Button>
                           </Grid>
                         </Grid>
                       </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        display="flex"
+                        justifyContent={"center"}
+                        alignItems="center"
+                      >
+                        <Grid item xs={3}>
+                          <Typography variant="h6">STEP 1</Typography>
+                        </Grid>
+                        <Grid item xs={9} direction="column">
+                          <Grid item xs={12} sm={12} md={12}>
+                            <TextField
+                              id="outlined-read-only-input"
+                              fullWidth
+                              label=""
+                              defaultValue={invoice?.request}
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                            />
+                            <Button
+                              style={{ margin: "10px auto", width: "100%" }}
+                              variant="outlined"
+                              onClick={() => {
+                                setSnackOpen(true);
+                                navigator.clipboard.writeText(invoice?.request);
+                                trackEvent("Click: Copy Invoice", {
+                                  ...invoice,
+                                });
+                              }}
+                              startIcon={<ContentCopyIcon />}
+                            >
+                              Copy invoice
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        display="flex"
+                        justifyContent={"center"}
+                        alignItems="center"
+                      >
+                        <Grid item xs={3}>
+                          <Typography variant="h6">STEP 2</Typography>
+                        </Grid>
+                        <Grid item xs={9} direction="column">
+                          <Grid container>
+                            <Grid item xs={12} sm={12} md={12}>
+                              <CashappModal trackEvent={trackEvent} />
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12}>
+                              <StrikeMeModal trackEvent={trackEvent} />
+                            </Grid>
+
+                            <Grid item xs={12} md={12}>
+                              {/* <Divider style={{ margin: "16px 0" }} /> */}
+                              <Button
+                                variant="outlined"
+                                style={{
+                                  color: "#f7931a",
+                                  borderColor: "#f7931a",
+                                  width: "100%",
+                                  margin: "0px 0",
+                                }}
+                                startIcon={<LightningIcon />}
+                                onClick={() => {
+                                  window.open(`lightning:${invoice?.request}`);
+                                  trackEvent("Click: Open Lightning App", {});
+                                }}
+                              >
+                                Open Lightning App
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid container id="qr-code" xs={5}>
+                      <Grid
+                        item
+                        justifyContent={"center"}
+                        alignItems="center"
+                        display={"flex"}
+                        flexDirection="row"
+                      >
+                        <Divider orientation="vertical">OR</Divider>
+                        {/* <Typography variant="h6">OR</Typography> */}
+
+                        <div style={{ paddingLeft: "8px" }}>
+                          <QRCodeSVG
+                            style={{
+                              width: "100%",
+                              alignSelf: "center",
+                            }}
+                            width={200}
+                            height={200}
+                            onClick={() => {
+                              window.open(`lightning:${invoice?.request}`);
+                              trackEvent("Click: QR Code", {});
+                            }}
+                            value={invoice?.request || ""}
+                          />
+                          <span>Scan QR Code</span>
+                        </div>
+                      </Grid>
                     </Grid>
                   </Grid>
-                  <Grid container id="qr-code" xs={5}>
-                    <Grid
-                      item
-                      justifyContent={"center"}
-                      alignItems="center"
-                      display={"flex"}
-                      flexDirection="row"
-                    >
-                      <Divider orientation="vertical">OR</Divider>
-                      {/* <Typography variant="h6">OR</Typography> */}
 
-                      <div style={{ paddingLeft: "8px" }}>
-                        <QRCodeSVG
-                          style={{
-                            width: "100%",
-                            alignSelf: "center",
-                          }}
-                          width={200}
-                          height={200}
-                          onClick={() => {
-                            window.open(`lightning:${invoice?.request}`);
-                          }}
-                          value={invoice?.request || ""}
-                        />
-                        <span>Scan QR Code</span>
-                      </div>
-                    </Grid>
-                  </Grid>
-                </Grid>
+                  <div style={{ paddingTop: "2%" }}></div>
 
-                <div style={{ paddingTop: "2%" }}></div>
-
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{
-                    // color: "#f7931a",
-                    // borderColor: "#f7931a",
-                    // width: "100%",
-                    margin: "8px 0",
-                  }}
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => {
-                    reset();
-                  }}
-                >
-                  Go Back
-                </Button>
-
-                <Snackbar
-                  open={snackOpen}
-                  autoHideDuration={3000}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                >
-                  <Alert
-                    onClose={handleClose}
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: "100%" }}
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{
+                      // color: "#f7931a",
+                      // borderColor: "#f7931a",
+                      // width: "100%",
+                      margin: "8px 0",
+                    }}
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => {
+                      reset();
+                      trackEvent("Click: Go Back", {});
+                    }}
                   >
-                    Copied!
-                  </Alert>
-                </Snackbar>
-                {/* {weblnEnabled && (
+                    Go Back
+                  </Button>
+
+                  <Snackbar
+                    open={snackOpen}
+                    autoHideDuration={3000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  >
+                    <Alert
+                      onClose={handleClose}
+                      severity="success"
+                      variant="filled"
+                      sx={{ width: "100%" }}
+                    >
+                      Copied!
+                    </Alert>
+                  </Snackbar>
+                  {/* {weblnEnabled && (
                   <Chip
                     style={{ marginTop: 30 }}
                     icon={<VerifiedIcon />}
@@ -927,7 +995,8 @@ const Home: NextPage = () => {
                     color="success"
                   />
                 )} */}
-              </>
+                </>
+              )
             )}
 
             {stableDiffusionId && images.length === 0 && (
@@ -937,11 +1006,23 @@ const Home: NextPage = () => {
                   align="center"
                   style={{
                     fontWeight: "bold",
-                    paddingLeft: "12%",
-                    paddingRight: "12%",
+                    paddingLeft: "8%",
+                    paddingRight: "8%",
                   }}
                 >
-                  Your free generation is being processed with Stable Diffusion
+                  Your 1 free generation is being processed with Stable
+                  Diffusion
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    paddingLeft: "8%",
+                    paddingRight: "8%",
+                  }}
+                >
+                  Note: The Dalle-2 version includes 4 images per generation
                 </Typography>
 
                 <Box sx={{ width: "100%" }}>
@@ -1052,6 +1133,7 @@ const Home: NextPage = () => {
                                     .toString(36)
                                     .substring(2, 15)}.png`
                                 );
+                                trackEvent("Click: Download Single Image", {});
                               }}
                               // aria-label={`star ${item.title}`}
                             >
@@ -1065,15 +1147,14 @@ const Home: NextPage = () => {
                   ))}
                 </ImageList>
                 <Grid container direction="row">
-                  <Grid item xs={6} md={6}>
+                  <Grid item xs={12} md={12}>
                     <Button
                       variant="outlined"
                       fullWidth
                       size="medium"
                       style={{
                         color: "#000000",
-                        paddingTop: "2vh",
-                        paddingBottom: "2vh",
+
                         borderColor: "#000000",
                         fontSize: "0.79rem",
                       }}
@@ -1098,12 +1179,13 @@ const Home: NextPage = () => {
                               .toLowerCase()}.zip`
                           );
                         });
+                        trackEvent("Click: Download All", {});
                       }}
                     >
                       Download All
                     </Button>
                   </Grid>
-                  <Grid item xs={6} md={6}>
+                  <Grid item xs={12} md={12}>
                     <Button
                       variant="outlined"
                       fullWidth
@@ -1111,20 +1193,23 @@ const Home: NextPage = () => {
                       style={{
                         color: "#7b1af7",
                         borderColor: "#7b1af7",
-                        paddingTop: "2vh",
-                        paddingBottom: "2vh",
+
                         fontSize: "0.79rem",
                       }}
                       startIcon={<BrushIcon />}
                       onClick={async () => {
                         reset();
+                        trackEvent("Click: Create More", {});
                       }}
                     >
-                      CREATE MORE
+                      CREATE ANOTHER
                     </Button>
                   </Grid>
                 </Grid>
-                <Feedback id={invoice?.uuid || stableDiffusionId} />
+                <Feedback
+                  id={invoice?.uuid || stableDiffusionId}
+                  trackEvent={trackEvent}
+                />
               </>
             )}
             {/* <FAQ /> */}

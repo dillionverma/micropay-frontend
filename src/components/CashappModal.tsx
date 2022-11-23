@@ -5,7 +5,11 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { CashappIcon } from "../../src/assets/icons/icons";
 
-export default function CashappModal() {
+export default function CashappModal({
+  trackEvent,
+}: {
+  trackEvent: (label: string, params: object) => void;
+}) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
@@ -20,6 +24,7 @@ export default function CashappModal() {
         }}
         onClick={() => {
           setModalOpen(true);
+          trackEvent("Click: Open Cash App", {});
         }}
         startIcon={<CashappIcon />}
       >
@@ -71,6 +76,7 @@ export default function CashappModal() {
               }}
               onClick={() => {
                 window.open("https://cash.app/$", "_blank");
+                trackEvent("Click: Take Me to Cash App", {});
               }}
               startIcon={<CashappIcon />}
             >
