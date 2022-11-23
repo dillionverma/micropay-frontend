@@ -1015,90 +1015,98 @@ const Home: NextPage = () => {
               )
             )}
 
-            {stableDiffusionId && images.length === 0 && (
-              <>
-                <Typography
-                  variant="subtitle1"
-                  align="center"
-                  style={{
-                    fontWeight: "bold",
-                    paddingLeft: "8%",
-                    paddingRight: "8%",
-                  }}
-                >
-                  Your 1 free generation is being processed with Stable
-                  Diffusion
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  align="center"
-                  style={{
-                    fontWeight: "bold",
-                    paddingLeft: "8%",
-                    paddingRight: "8%",
-                  }}
-                >
-                  Note: The Dalle-2 version includes 4 images per generation
-                </Typography>
-
-                <Box sx={{ width: "100%" }}>
-                  <Typography variant="subtitle1" align="center">
-                    Status: {orderStatus}
-                  </Typography>
-                  <LinearProgress
-                    style={{ margin: "10px 0" }}
-                    variant="determinate"
-                    value={progress}
-                  />
-                  <Typography variant="subtitle1" align="center">
-                    Experiencing problems? Message us on{" "}
-                    <a
-                      href="https://t.me/+zGVesHQRbl04NTA5"
-                      style={{ color: "#0070f3" }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Telegram
-                    </a>
-                    .
-                  </Typography>
-                </Box>
-
-                <div style={{ paddingTop: "2%" }}></div>
-
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{
-                    // color: "#f7931a",
-                    // borderColor: "#f7931a",
-                    // width: "100%",
-                    margin: "8px 0",
-                  }}
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => {
-                    reset();
-                  }}
-                >
-                  Go Back
-                </Button>
-
-                <Snackbar
-                  open={snackOpen}
-                  autoHideDuration={3000}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                >
-                  <Alert
-                    onClose={handleClose}
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: "100%" }}
+            {!stableDiffusionId && !showTitle ? (
+              <Skeleton
+                style={{ width: "100%", height: "75vh" }}
+                animation="wave"
+              />
+            ) : (
+              stableDiffusionId &&
+              images.length === 0 && (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    style={{
+                      fontWeight: "bold",
+                      paddingLeft: "8%",
+                      paddingRight: "8%",
+                    }}
                   >
-                    Copied!
-                  </Alert>
-                </Snackbar>
-              </>
+                    Your 1 free generation is being processed with Stable
+                    Diffusion
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    style={{
+                      fontWeight: "bold",
+                      paddingLeft: "8%",
+                      paddingRight: "8%",
+                    }}
+                  >
+                    Note: The Dalle-2 version includes 4 images per generation
+                  </Typography>
+
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="subtitle1" align="center">
+                      Status: {orderStatus}
+                    </Typography>
+                    <LinearProgress
+                      style={{ margin: "10px 0" }}
+                      variant="determinate"
+                      value={progress}
+                    />
+                    <Typography variant="subtitle1" align="center">
+                      Experiencing problems? Message us on{" "}
+                      <a
+                        href="https://t.me/+zGVesHQRbl04NTA5"
+                        style={{ color: "#0070f3" }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Telegram
+                      </a>
+                      .
+                    </Typography>
+                  </Box>
+
+                  <div style={{ paddingTop: "2%" }}></div>
+
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{
+                      // color: "#f7931a",
+                      // borderColor: "#f7931a",
+                      // width: "100%",
+                      margin: "8px 0",
+                    }}
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => {
+                      reset();
+                    }}
+                  >
+                    Go Back
+                  </Button>
+
+                  <Snackbar
+                    open={snackOpen}
+                    autoHideDuration={3000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  >
+                    <Alert
+                      onClose={handleClose}
+                      severity="success"
+                      variant="filled"
+                      sx={{ width: "100%" }}
+                    >
+                      Copied!
+                    </Alert>
+                  </Snackbar>
+                </>
+              )
             )}
             {images.length > 0 && (
               <>
