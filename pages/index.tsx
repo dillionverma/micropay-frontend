@@ -7,6 +7,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RedditIcon from "@mui/icons-material/Reddit";
 import TelegramIcon from "@mui/icons-material/Telegram";
+import TwitterIcon from "@mui/icons-material/Twitter";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
@@ -718,6 +719,21 @@ const Home: NextPage = () => {
                       startIcon={<TelegramIcon style={{ color: "#2AABEE" }} />}
                     >
                       JOIN
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4} sm={3}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      size="medium"
+                      style={{ color: "#1DA1F2", borderColor: "#1DA1F2" }}
+                      onClick={() => {
+                        window.open("https://twitter.com/micropay_ai");
+                        trackEvent("Click: Follow Twitter", {});
+                      }}
+                      startIcon={<TwitterIcon style={{ color: "#1DA1F2" }} />}
+                    >
+                      FOLLOW
                     </Button>
                   </Grid>
                   <Grid item xs={4} sm={3}>
