@@ -1,4 +1,3 @@
-import { Alert } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,7 +16,7 @@ const navItems = [
 export default function DrawerAppBar() {
   return (
     <>
-      <Alert
+      {/* <Alert
         variant="filled"
         severity="success"
         style={{
@@ -40,7 +39,7 @@ export default function DrawerAppBar() {
           ProductHunt
         </a>{" "}
         right now 🎉
-      </Alert>
+      </Alert> */}
       <AppBar
         component="nav"
         style={{ backgroundColor: "white", position: "relative" }}
