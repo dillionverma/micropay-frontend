@@ -17,6 +17,22 @@ a {
   padding: 4px 4px !important;
 }
 
+.MuiButtonBase-root {
+  border-radius: 50px !important;
+}
+
+.MuiInputBase-root {
+  border-radius: 20px !important;
+}
+
+.MuiImageListItemBar-root {
+  background: none !important;
+}
+
+.MuiImageListItem-root img {
+  border-radius: 20px !important;
+}
+
 @media (max-width: 600px) {
   #qr-code {
     display: none;
