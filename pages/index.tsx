@@ -1,3 +1,4 @@
+import { FitScreen } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrushIcon from "@mui/icons-material/BrushOutlined";
@@ -56,12 +57,10 @@ import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
+import profanity from "../src/constants/profanity.json";
 
 const filter = new Filter();
-
-// this one was used quite a bit
-filter.addWords("dickbutt");
-filter.removeWords("god");
+filter.addWords(...profanity.profanityList);
 
 interface DalleResponse {
   id: string;
