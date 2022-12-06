@@ -20,7 +20,7 @@ const Dev = () => {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://micropay.ai/" />
+        <meta property="og:url" content="https://micropay.ai/dev" />
         <meta
           property="og:title"
           content="Lightning Payments API for developers | micropay"
