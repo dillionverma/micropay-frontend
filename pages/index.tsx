@@ -43,7 +43,6 @@ import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Script from "next/script";
 import { QRCodeSVG } from "qrcode.react";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { requestProvider } from "webln";
@@ -472,25 +471,7 @@ const Home: NextPage = () => {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
-        <script
-          defer
-          data-domain="describe.photo"
-          src="https://plausible.io/js/plausible.js"
-        />
       </Head>
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-LTPMN00GCF"
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'G-LTPMN00GCF');
-        `}
-      </Script>
 
       <main className={styles.main}>
         <Container maxWidth="sm">
