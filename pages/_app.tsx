@@ -18,13 +18,16 @@ const darkTheme = createTheme({
   },
 });
 
+const commonLayout = (page: React.ReactNode) => <Layout>{page}</Layout>;
+
 function MyApp({ Component, pageProps }: AppProps) {
+  // @ts-ignore
+  const getLayout = Component.getLayout || commonLayout;
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      {getLayout(<Component {...pageProps} />)}
     </ThemeProvider>
   );
 }
