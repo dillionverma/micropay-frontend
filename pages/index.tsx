@@ -1,4 +1,3 @@
-import { FitScreen } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrushIcon from "@mui/icons-material/BrushOutlined";
@@ -52,12 +51,12 @@ import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
 import StrikeMeModal from "../src/components/StrikeMeModal";
+import profanity from "../src/constants/profanity.json";
 import { Mixpanel } from "../src/mixpanel";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
 import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
-import profanity from "../src/constants/profanity.json";
 
 const filter = new Filter();
 filter.addWords(...profanity.profanityList);
