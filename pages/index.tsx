@@ -50,6 +50,7 @@ import { LightningIcon } from "../src/assets/icons/icons";
 import CashappModal from "../src/components/CashappModal";
 import Feedback from "../src/components/Feedback";
 import StrikeMeModal from "../src/components/StrikeMeModal";
+import profanity from "../src/constants/profanity.json";
 import { Mixpanel } from "../src/mixpanel";
 import { downloadImage } from "../src/utils/downloadImage";
 import { getRandomElement } from "../src/utils/index";
@@ -57,9 +58,7 @@ import { useInterval } from "../src/utils/useInterval";
 import styles from "../styles/Home.module.css";
 
 const filter = new Filter();
-
-// this one was used quite a bit
-filter.addWords("dickbutt");
+filter.addWords(...profanity.profanityList);
 filter.removeWords("god");
 
 interface DalleResponse {
