@@ -60,6 +60,7 @@ import styles from "../styles/Home.module.css";
 
 const filter = new Filter();
 filter.addWords(...profanity.profanityList);
+filter.removeWords("god");
 
 interface DalleResponse {
   id: string;
