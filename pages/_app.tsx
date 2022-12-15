@@ -5,6 +5,7 @@ import "../styles/globals.css";
 import { blue } from "@mui/material/colors";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Script from "next/script";
 
 const darkTheme = createTheme({
   palette: {
@@ -28,6 +29,19 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       {getLayout(<Component {...pageProps} />)}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-LTPMN00GCF"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-LTPMN00GCF');
+        `}
+      </Script>
     </ThemeProvider>
   );
 }
