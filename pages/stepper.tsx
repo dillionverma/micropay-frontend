@@ -16,7 +16,7 @@ const steps = [
               and geographical locations you want your ads to show on, and more.`,
   },
   {
-    label: "Pay 1000 satoshis",
+    label: "Pay 500 satoshis",
     description:
       "What is a satoshi? A satoshi is a smaller unit of bitcoin. A single bitcoin is approximately worth 1,000 satoshis.",
   },

@@ -41,10 +41,10 @@ const FAQ = () => (
           1 satoshi = 0.00000001 BTC
         </Typography>
         <Typography style={{ marginLeft: "10px" }}>
-          1000 satoshi = 0.00001 BTC
+          500 satoshi = 0.000005 BTC
         </Typography>
         <Typography style={{ marginLeft: "10px" }}>
-          1000 satoshi = ~$0.2 USD
+          500 satoshi = ~$0.14 USD
         </Typography>
         <Typography>3. Scan the above invoice and pay!</Typography>
       </AccordionDetails>

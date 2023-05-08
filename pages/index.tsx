@@ -202,7 +202,7 @@ const Home: NextPage = () => {
       return (e.returnValue = warningText);
     };
     if (images.length == 4) {
-      trackEvent("Conversion: 1000 sats", {});
+      trackEvent("Conversion: 500 sats", {});
     }
 
     window.addEventListener("beforeunload", handleWindowClose);
@@ -769,7 +769,7 @@ const Home: NextPage = () => {
                       margin: "0",
                     }}
                   >
-                    Cost: 1000 satoshis
+                    Cost: 500 satoshis
                   </Typography>
                   <Box sx={{ width: "100%" }}>
                     <Divider style={{ margin: "10px 0" }} />
