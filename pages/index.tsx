@@ -3,11 +3,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrushIcon from "@mui/icons-material/BrushOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
-import PhoneIcon from "@mui/icons-material/Phone";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import RedditIcon from "@mui/icons-material/Reddit";
-import TelegramIcon from "@mui/icons-material/Telegram";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
@@ -643,7 +639,7 @@ const Home: NextPage = () => {
                       </Tooltip>
                     </StyledBadge>
                   </Grid>
-                  <Grid item xs={6} sm={6}>
+                  {/* <Grid item xs={6} sm={6}>
                     <Tooltip title="Coming soon" placement="top">
                       <LoadingButton
                         variant="contained"
@@ -664,7 +660,7 @@ const Home: NextPage = () => {
                         Bulk Purchase
                       </LoadingButton>
                     </Tooltip>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <br></br>
                 <Grid
@@ -675,7 +671,7 @@ const Home: NextPage = () => {
                   className="button-container"
                   // alignItems={"stretch"}
                 >
-                  <Grid item xs={3} sm={3}>
+                  {/* <Grid item xs={3} sm={3}>
                     <Button
                       variant="outlined"
                       fullWidth
@@ -738,7 +734,7 @@ const Home: NextPage = () => {
                     >
                       CALL US
                     </Button>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </>
             )}
