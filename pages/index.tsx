@@ -504,11 +504,33 @@ const Home: NextPage = () => {
               </strong>
             )}
 
+            <strong style={{ color: "red" }}>
+              micropay.ai has been depecrated
+            </strong>
+            <strong style={{ color: "red" }}>
+              Follow{" "}
+              <a
+                href="https://twitter.com/dillionverma"
+                style={{ color: "blue" }}
+              >
+                @dillionverma
+              </a>{" "}
+              &{" "}
+              <a
+                href="https://twitter.com/haseabamin"
+                style={{ color: "blue" }}
+              >
+                @haseabamin
+              </a>{" "}
+              on Twitter for updates
+            </strong>
+
             {!invoice && !stableDiffusionId && showTitle && (
               <>
                 <TextField
                   error={!!errorMessage && images.length === 0}
                   helperText={errorMessage}
+                  disabled
                   fullWidth
                   label="Type something you won't find online"
                   // label="Use your imagination to create something new"
@@ -576,6 +598,7 @@ const Home: NextPage = () => {
                       <LoadingButton
                         variant="contained"
                         style={{ width: "100%" }}
+                        disabled
                         color="primary"
                         loading={invoice && images.length === 0 && !showRefund}
                         // loadingIndicator="Waiting for payment…"
@@ -621,7 +644,8 @@ const Home: NextPage = () => {
                                 remainingCount === 0 ? "line-through" : "none",
                               // textDecorationColor: "grey",
                             }}
-                            disabled={remainingCount === 0}
+                            disabled
+                            // disabled={remainingCount === 0}
                             loading={
                               invoice && images.length === 0 && !showRefund
                             }
