@@ -505,7 +505,7 @@ const Home: NextPage = () => {
             )}
 
             <strong style={{ color: "red" }}>
-              micropay.ai has been depecrated
+              micropay.ai has been deprecrated. Demand was less than Costs.
             </strong>
             <strong style={{ color: "red" }}>
               Follow{" "}
