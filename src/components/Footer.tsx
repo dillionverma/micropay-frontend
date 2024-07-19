@@ -289,6 +289,9 @@ export default function Footer() {
                 .
               </a>
             </Typography>
+            <Typography variant="subtitle1" align="center" color={"red"}>
+              This software has been deprecated as of 2022
+            </Typography>
           </Grid>
         </Grid>
       </footer>

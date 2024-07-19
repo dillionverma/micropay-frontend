@@ -498,33 +498,6 @@ const Home: NextPage = () => {
               </>
             )}
 
-            {process.env.NODE_ENV === "development" && (
-              <strong style={{ color: "red" }}>
-                Development with Mock Images = {mockImages.toString()}
-              </strong>
-            )}
-
-            <strong style={{ color: "red" }}>
-              micropay.ai has been deprecated.
-            </strong>
-            <strong style={{ color: "red" }}>
-              Follow{" "}
-              <a
-                href="https://twitter.com/dillionverma"
-                style={{ color: "blue" }}
-              >
-                @dillionverma
-              </a>{" "}
-              &{" "}
-              <a
-                href="https://twitter.com/haseabamin"
-                style={{ color: "blue" }}
-              >
-                @haseabamin
-              </a>{" "}
-              on Twitter for updates
-            </strong>
-
             {!invoice && !stableDiffusionId && showTitle && (
               <>
                 <TextField
@@ -639,7 +612,6 @@ const Home: NextPage = () => {
                             style={{
                               width: "100%",
                               backgroundColor: grey[200],
-                              color: "black",
                               textDecoration:
                                 remainingCount === 0 ? "line-through" : "none",
                               // textDecorationColor: "grey",
